@@ -1166,7 +1166,26 @@
           </sc-if>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="How much will you use? (g)" placeholder="100" value="{{ form.grams }}" on-change="{{ on.grams }}" hint-size="100%,72px"></x-import>
           <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ useYarnHint }}</span>
-          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ saveUseYarn }}" hint-size="100%,48px">Save</x-import>
+          <sc-if value="{{ useAdding }}">
+            <div style="display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" full-width="{{ true }}" icon="plus" on-click="{{ addAnotherYarn }}" hint-size="100%,48px">Add another</x-import>
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" icon="check" on-click="{{ saveUseYarn }}" hint-size="100%,48px">Add &amp; done</x-import>
+            </div>
+            <sc-if value="{{ hasUseCurrent }}">
+              <section style="background:var(--nn-dusty-rose);border-radius:20px;padding:12px;display:flex;flex-direction:column;gap:8px">
+                <span style="font-size:14px;font-weight:600">On this project</span>
+                <sc-for list="{{ useCurrent }}" as="u" hint-placeholder-count="0">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    {{ u.swatch }}
+                    <span style="font-size:14px;line-height:1.3">{{ u.label }}</span>
+                  </div>
+                </sc-for>
+              </section>
+            </sc-if>
+          </sc-if>
+          <sc-if value="{{ form.editing }}">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ saveUseYarn }}" hint-size="100%,48px">Save</x-import>
+          </sc-if>
           <sc-if value="{{ form.editing }}">
             <div style="display:flex;justify-content:center">
               <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ removeUseYarn }}" hint-size="160px,36px">Take off this project</x-import>
@@ -2166,7 +2185,11 @@ class Component extends DCLogic {
   startWish(w) { this.openProjectSheet(null, { title: w.title, craft: w.craft, wishId: w.id, notes: [w.yarn && 'Yarn idea: ' + w.yarn, w.link && 'Pattern: ' + w.link].filter(Boolean).join('\n') }); }
 
   openUseYarn(u) { this.openSheet('useYarn', u ? { yarnId: u.yarnId, key: u.outside ? u.key : null, addMode: u.outside ? 'other' : 'stash', addName: u.outside ? (u.name || '') : '', addHex: u.hex || '#F9B6B8', grams: String(u.grams), editing: true } : { yarnId: null, yarnQuery: '', addMode: this.state.data.stash.length ? 'stash' : 'other', addName: '', addHex: '#F9B6B8', grams: '', editing: false }); }
-  saveUseYarn = () => {
+  afterUseYarn(keep) {
+    if (keep && !this.state.form.editing) { this.setState(st => ({ form: { ...st.form, yarnId: null, yarnQuery: '', addName: '', grams: '', key: null } })); this.flash('Added! Pick the next one.'); }
+    else this.closeSheet();
+  }
+  saveUseYarn = keep => {
     const f = this.state.form, y = this.state.data.stash.find(s => s.id === f.yarnId);
     if (f.addMode === 'other') {
       if (!(f.addName || '').trim()) return this.flash('Name the yarn first.');
@@ -2176,7 +2199,7 @@ class Component extends DCLogic {
         const u = f.key && p.yarns.find(v => v.key === f.key);
         if (u) Object.assign(u, vals); else p.yarns.push({ yarnId: null, key: this.uid(), outside: true, colour: '', ...vals });
       });
-      return this.closeSheet();
+      return this.afterUseYarn(keep);
     }
     if (!y) return this.flash('Pick a yarn first.');
     this.update(d => {
@@ -2185,7 +2208,7 @@ class Component extends DCLogic {
       const snap = { name: y.name, colour: y.colour, hex: y.hex, cols: this.cols(y) };
       if (u) Object.assign(u, snap, { grams: this.num(f.grams) }); else p.yarns.push({ yarnId: f.yarnId, grams: this.num(f.grams), ...snap });
     });
-    this.closeSheet();
+    this.afterUseYarn(keep);
   };
   removeUseYarn = () => { const { yarnId: id, key } = this.state.form; this.update(d => { const p = d.projects.find(x => x.id === this.state.openId); p.yarns = p.yarns.filter(u => key ? u.key !== key : u.yarnId !== id); }); this.closeSheet(); };
 
@@ -2650,7 +2673,10 @@ class Component extends DCLogic {
       useYarnHint: f.addMode === 'other' ? 'Not from your stash, so nothing gets deducted.' : selYarn ? selYarn.grams + ' g in your stash. Nothing comes out until you finish.' : '',
       useStash: f.addMode !== 'other', useOther: f.addMode === 'other', useModeShow: !f.editing,
       useModeChips: [['stash', 'From stash'], ['other', 'Not from stash']].map(([v, l]) => ({ label: l, selected: (f.addMode || 'stash') === v, onClick: () => this.setForm('addMode', v) })),
-      saveUseYarn: this.saveUseYarn, removeUseYarn: this.removeUseYarn,
+      saveUseYarn: () => this.saveUseYarn(false), addAnotherYarn: () => this.saveUseYarn(true), removeUseYarn: this.removeUseYarn,
+      useAdding: s.sheet === 'useYarn' && !f.editing,
+      useCurrent: s.sheet === 'useYarn' && cp ? cp.yarns.map(u => { const r = this.yarnRow(u, d.stash); return { label: r.title + ' · ' + u.grams + ' g', swatch: this.swatch(r.hex) }; }) : [],
+      hasUseCurrent: s.sheet === 'useYarn' && !f.editing && !!cp && cp.yarns.length > 0,
       pv, mv,
       finishIntro: f.newMake ? 'Log something you made. Add a photo, the yarn you used and a few notes for future you.' : cp ? 'You finished ' + cp.title + '! Add a photo and a few notes for future you.' : '',
       finishPhotoLabel: f.photo ? 'Change photo' : 'Add a photo',
