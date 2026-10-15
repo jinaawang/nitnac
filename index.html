@@ -124,6 +124,7 @@
           <h1 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:44px;line-height:1.05">Hi, {{ me.firstName }}</h1>
         </div>
         <div style="position:relative;flex-shrink:0;padding-top:8px;display:flex;gap:8px">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ goWish }}" style="margin-top:4px" hint-size="90px,36px">Wishlist</x-import>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="search" label="Find people" on-click="{{ goFriends }}" hint-size="44px,44px"></x-import>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="bell" label="Activity" on-click="{{ openActivity }}" hint-size="44px,44px"></x-import>
           <sc-if value="{{ hasActivity }}">
@@ -1130,7 +1131,8 @@
             <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ saveWish }}" dc-props="{{ bigBtn }}" hint-size="100%,56px">Save to wishlist</x-import>
           </div>
           <sc-if value="{{ form.id }}">
-            <div style="display:flex;justify-content:center">
+            <div style="display:flex;justify-content:center;gap:8px;flex-wrap:wrap">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" icon="arrow" on-click="{{ startWishFromSheet }}" hint-size="100px,36px">Start it</x-import>
               <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ deleteWish }}" hint-size="140px,36px">Remove from list</x-import>
             </div>
           </sc-if>
@@ -2557,6 +2559,9 @@ class Component extends DCLogic {
       updPhoto: s.sheet === 'update' ? (this.src(sf.updRef) || this.src((d.projects.find(x => x.id === sf.pid) || {}).photo) || null) : null,
       updPhotoLabel: sf.updRef ? 'Change photo' : 'Add a new photo', pickUpdatePhoto: () => this.pickPhoto('update'),
       updCaption: sf.caption || '', onUpdCaption: v => this.setForm('caption', v), postUpdate: this.postUpdate, updCta: sf.posting ? 'Posting…' : 'Post update',
+      homeWish: d.wish.slice(0, 10).map((w, i) => ({ title: w.title, craft: w.craft, yarn: w.yarn || 'No yarn picked yet', bg: i % 2 ? 'var(--nn-arctic-blue)' : 'var(--nn-dusty-rose)', onOpen: () => this.openWishSheet(w) })),
+      hasHomeWish: d.wish.length > 0, noHomeWish: !d.wish.length, addWish: () => this.openWishSheet(null),
+      startWishFromSheet: () => { const w = d.wish.find(x => x.id === sf.id); if (w) this.startWish(w); },
       fvGrid, fvMakeCount: String(fvGridAll.length), fvWorkingCount: String(fvProjects.length), fvWishCount: String(fvWish.length), fvFriendCount: s.fvFriends == null ? '–' : String(s.fvFriends),
       postDetail: postObj ? [postCard(postObj, Math.max(0, soc.posts.indexOf(postObj)))] : [], postMissing: s.tab === 'post' && !postObj,
       postHeading: postObj ? (postObj.user_id === me ? 'Your make' : pname(postObj.user_id) + "'s make") : 'Make', closePost: this.closePost,
