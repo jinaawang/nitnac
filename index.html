@@ -57,28 +57,437 @@
       </sc-if>
     </main>
   </sc-if>
+  <sc-if value="{{ setupScreen }}" hint-placeholder-val="{{ false }}">
+    <main style="width:100%;max-width:420px;min-height:100vh;padding:48px 16px;box-sizing:border-box;display:flex;flex-direction:column;justify-content:center;gap:24px">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h1 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:44px;line-height:1.05">Set up your profile</h1>
+        <p style="margin:0;font-size:17px;line-height:1.45">This is how your friends find and see you.</p>
+      </div>
+      <section style="background:var(--nn-card);border-radius:28px;padding:16px;display:flex;flex-direction:column;gap:16px">
+          <div style="display:flex;align-items:center;gap:16px">
+            {{ pfAvatar }}
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="rose" size="sm" icon="camera" on-click="{{ pickAvatar }}" hint-size="140px,36px">{{ pfPhotoLabel }}</x-import>
+          </div>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Your name" placeholder="Jina" value="{{ pfName }}" on-change="{{ onPfName }}" hint-size="100%,72px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Username" placeholder="jina_makes" value="{{ pfUsername }}" on-change="{{ onPfUsername }}" hint-size="100%,72px"></x-import>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Friends find you by this. Lowercase letters, numbers and _.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600">Who can see your profile</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ pfVisChips }}" as="c" hint-placeholder-count="2">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="card" selected="{{ c.selected }}" on-click="{{ c.onClick }}" hint-size="110px,36px">{{ c.label }}</x-import>
+              </sc-for>
+            </div>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ pfVisHint }}</span>
+          </div>
+          <sc-if value="{{ pfMsg }}">
+            <p style="margin:0;font-size:14px;line-height:1.4;font-weight:600">{{ pfMsg }}</p>
+          </sc-if>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ saveProfile }}" dc-props="{{ bigBtn }}" hint-size="100%,56px">{{ pfCta }}</x-import>
+      </section>
+      <div style="display:flex;justify-content:center">
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ signOut }}" hint-size="90px,36px">Sign out</x-import>
+      </div>
+    </main>
+  </sc-if>
   <sc-if value="{{ signedIn }}" hint-placeholder-val="{{ false }}">
   <sc-if value="{{ wide }}" hint-placeholder-val="{{ false }}">
     <header style="position:sticky;top:0;z-index:20;width:100%;background:var(--nn-cosmic-latte);display:flex;justify-content:center;padding:16px clamp(16px,4vw,48px);box-sizing:border-box">
       <div style="width:100%;max-width:1120px;display:flex;align-items:center;gap:24px">
         <span style="font-family:var(--font-title);font-size:28px;line-height:1">NitNac</span>
         <nav aria-label="Main" style="display:flex;gap:4px;background:var(--nn-crimson-deep);border-radius:999px;padding:4px">
-          <sc-for list="{{ tabsAll }}" as="t" hint-placeholder-count="4">
+          <sc-for list="{{ tabsAll }}" as="t" hint-placeholder-count="5">
             <button type="button" onClick="{{ t.onClick }}" style="display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border:none;border-radius:999px;cursor:pointer;background:{{ t.pillBg }};font-family:var(--font-text);font-size:14px;font-weight:600;color:{{ t.pillColor }}">
               <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="{{ t.icon }}" size="{{ 18 }}" color="{{ t.pillColor }}" hint-size="18px,18px"></x-import>
               <span>{{ t.label }}</span>
+              <sc-if value="{{ t.dot }}">
+                <span style="width:8px;height:8px;border-radius:50%;background:var(--nn-burnt-sienna)"></span>
+              </sc-if>
             </button>
           </sc-for>
         </nav>
         <div style="flex:1"></div>
-        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ signOut }}" hint-size="90px,36px">Sign out</x-import>
-        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" icon="plus" on-click="{{ onPlus }}" hint-size="150px,48px">{{ plusLabel }}</x-import>
+        <sc-if value="{{ hasPlus }}">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" icon="plus" on-click="{{ onPlus }}" hint-size="150px,48px">{{ plusLabel }}</x-import>
+        </sc-if>
       </div>
     </header>
   </sc-if>
   <main style="width:100%;max-width:1120px;padding:{{ mainPad }};box-sizing:border-box;display:flex;flex-direction:column;gap:24px">
 
-    <sc-if value="{{ showProjects }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ showHome }}" hint-placeholder-val="{{ false }}">
+      <header style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;width:100%;max-width:600px;align-self:center;box-sizing:border-box">
+        <div style="display:flex;flex-direction:column;gap:8px;padding-top:8px;min-width:0">
+          <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ todayText }}</span>
+          <h1 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:44px;line-height:1.05">Hi, {{ me.firstName }}</h1>
+        </div>
+        <div style="position:relative;flex-shrink:0;padding-top:8px;display:flex;gap:8px">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="search" label="Find people" on-click="{{ goFriends }}" hint-size="44px,44px"></x-import>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="bell" label="Activity" on-click="{{ openActivity }}" hint-size="44px,44px"></x-import>
+          <sc-if value="{{ hasActivity }}">
+            <span style="position:absolute;top:2px;right:-6px;min-width:20px;height:20px;padding:0 5px;box-sizing:border-box;border-radius:999px;background:var(--nn-burnt-sienna);color:var(--nn-crimson-deep);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;pointer-events:none">{{ activityCount }}</span>
+          </sc-if>
+        </div>
+      </header>
+      <sc-if value="{{ noFriends }}" hint-placeholder-val="{{ false }}">
+        <section style="background:var(--nn-arctic-blue);border-radius:28px;padding:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;width:100%;max-width:600px;align-self:center;box-sizing:border-box">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IllustratedIcon" name="yarn-basket" tint="card" size="{{ 56 }}" hint-size="56px,56px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:4px;flex:1;min-width:180px">
+            <h2 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:20px;line-height:1.05">Crafting's better together</h2>
+            <p style="margin:0;font-size:15px;line-height:1.4">Add your friends to see what they're making.</p>
+          </div>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" icon="plus" on-click="{{ openAddFriend }}" hint-size="130px,36px">Find friends</x-import>
+        </section>
+      </sc-if>
+      <sc-if value="{{ feedLoading }}" hint-placeholder-val="{{ true }}">
+        <p style="margin:0;font-size:15px;font-weight:600;width:100%;max-width:600px;align-self:center;box-sizing:border-box">Setting the table…</p>
+      </sc-if>
+      <sc-if value="{{ feedEmpty }}" hint-placeholder-val="{{ false }}">
+        <p style="margin:0;font-size:17px;line-height:1.45;width:100%;max-width:600px;align-self:center;box-sizing:border-box">{{ feedEmptyText }}</p>
+      </sc-if>
+      <div style="display:flex;flex-direction:column;width:100%;max-width:600px;align-self:center">
+        <sc-for list="{{ feed }}" as="p" hint-placeholder-count="2">
+          <article style="display:flex;flex-direction:column;gap:10px;padding:16px 0 20px;border-bottom:1.5px solid var(--nn-dusty-rose);min-width:0">
+            <button type="button" onClick="{{ p.onAuthor }}" aria-label="Open profile" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;min-width:0">
+              {{ p.avatar }}
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span style="display:flex;gap:6px;align-items:baseline;flex-wrap:wrap">
+                  <span style="font-size:15px;font-weight:600">{{ p.author }}</span>
+                  <span style="font-size:12px;color:var(--nn-ink-muted)">{{ p.handle }} · {{ p.ago }}</span>
+                </span>
+                <span style="font-size:12px;color:var(--nn-ink-muted)">{{ p.action }}</span>
+              </span>
+            </button>
+            <div style="position:relative;width:100%;max-width:360px;aspect-ratio:3 / 4;border-radius:20px;overflow:hidden;background:{{ p.bg }};display:flex;align-items:center;justify-content:center">
+              <img src="{{ p.image }}" alt="{{ p.title }}" style="{{ p.imageStyle }}">
+            </div>
+            <div style="display:flex;align-items:center;gap:2px;margin-left:-8px">
+              <button type="button" onClick="{{ p.onLike }}" aria-label="{{ p.likeLabel }}" style="width:40px;height:40px;border-radius:50%;border:none;background:{{ p.likeBg }};cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-active="transform:scale(0.9)">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="heart" size="{{ 24 }}" hint-size="24px,24px"></x-import>
+              </button>
+              <span style="font-size:14px;font-weight:600;min-width:16px">{{ p.likeCount }}</span>
+              <button type="button" onClick="{{ p.onToggleComments }}" aria-label="Comments" style="width:40px;height:40px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin-left:8px" style-active="transform:scale(0.9)">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="comment" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+              </button>
+              <span style="font-size:14px;font-weight:600">{{ p.commentCount }}</span>
+            </div>
+            <sc-if value="{{ p.likedBy }}">
+              <span style="font-size:14px;line-height:1.4">Hearted by <span style="font-weight:600">{{ p.likedBy }}</span></span>
+            </sc-if>
+            <h3 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:22px;line-height:1.05;text-wrap:pretty">{{ p.title }}</h3>
+            <sc-if value="{{ p.isUpdate }}">
+              <sc-if value="{{ p.caption }}">
+                <p style="margin:0;font-size:15px;line-height:1.45;overflow-wrap:anywhere;text-wrap:pretty">{{ p.caption }}</p>
+              </sc-if>
+              <div style="display:flex;flex-direction:column;gap:4px;max-width:360px">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.ProgressBar" value="{{ p.progress }}" color="{{ p.barColor }}" hint-size="100%,32px"></x-import>
+              </div>
+            </sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" craft="{{ p.craft }}" size="sm" hint-size="80px,28px"></x-import>
+              <sc-if value="{{ p.category }}">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="outline" size="sm" hint-size="80px,28px">{{ p.category }}</x-import>
+              </sc-if>
+            </div>
+            <sc-if value="{{ p.yarnText }}">
+              <p style="margin:0;font-size:14px;line-height:1.4"><span style="font-weight:600">Yarn: </span>{{ p.yarnText }}</p>
+            </sc-if>
+            <sc-if value="{{ p.daysText }}">
+              <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ p.daysText }}</span>
+            </sc-if>
+            <sc-if value="{{ p.canDeleteUpdate }}">
+              <button type="button" onClick="{{ p.onDeleteUpdate }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Delete this update</button>
+            </sc-if>
+            <sc-if value="{{ p.hasLastComment }}">
+              <p style="margin:0;font-size:14px;line-height:1.4;overflow-wrap:anywhere"><span style="font-weight:600">{{ p.lastComment.name }}</span> {{ p.lastComment.body }}</p>
+            </sc-if>
+            <sc-if value="{{ p.collapsed }}">
+              <button type="button" onClick="{{ p.onToggleComments }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ p.viewLabel }}</button>
+            </sc-if>
+            <sc-if value="{{ p.showComments }}">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ p.comments }}" as="c" hint-placeholder-count="0">
+                  <div style="display:flex;gap:8px;align-items:flex-start;margin-left:{{ c.indent }}">
+                    {{ c.avatar }}
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                      <span style="font-size:14px;line-height:1.4;overflow-wrap:anywhere"><span style="font-weight:600">{{ c.name }}</span> <sc-for list="{{ c.parts }}" as="t" hint-placeholder-count="1"><sc-if value="{{ t.plain }}"><span>{{ t.text }}</span></sc-if><sc-if value="{{ t.mention }}"><button type="button" onClick="{{ t.onClick }}" style="all:unset;cursor:pointer;font-weight:700;color:var(--nn-crimson-deep);text-decoration:underline;text-underline-offset:2px">{{ t.text }}</button></sc-if></sc-for></span>
+                      <span style="display:flex;gap:12px;align-items:center">
+                        <span style="font-size:12px;color:var(--nn-ink-muted)">{{ c.when }}</span>
+                        <button type="button" onClick="{{ c.onReply }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Reply</button>
+                      </span>
+                    </div>
+                    <sc-if value="{{ c.canDelete }}">
+                      <button type="button" aria-label="Delete comment" onClick="{{ c.onDelete }}" style="all:unset;cursor:pointer;padding:6px">
+                        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="close" size="{{ 14 }}" hint-size="14px,14px"></x-import>
+                      </button>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ p.replying }}">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">
+                    <span>Replying to {{ p.replying }}</span>
+                    <button type="button" onClick="{{ p.onCancelReply }}" aria-label="Cancel reply" style="all:unset;cursor:pointer;padding:4px;display:flex">
+                      <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="close" size="{{ 12 }}" hint-size="12px,12px"></x-import>
+                    </button>
+                  </div>
+                </sc-if>
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center">
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" placeholder="{{ p.inputPh }}" value="{{ p.draft }}" on-change="{{ p.onDraft }}" hint-size="100%,44px"></x-import>
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" on-click="{{ p.onSend }}" hint-size="70px,36px">Post</x-import>
+                </div>
+                <sc-if value="{{ p.hasSuggest }}">
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <sc-for list="{{ p.suggest }}" as="u" hint-placeholder-count="0">
+                      <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="card" size="sm" on-click="{{ u.onClick }}" hint-size="120px,28px">{{ u.label }}</x-import>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+          </article>
+        </sc-for>
+      </div>
+      <sc-if value="{{ hasMoreFeed }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;justify-content:center;width:100%;max-width:600px;align-self:center;padding-bottom:8px">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" on-click="{{ loadMoreFeed }}" hint-size="140px,48px">Load more</x-import>
+        </div>
+      </sc-if>
+    </sc-if>
+
+    <sc-if value="{{ showFriend }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px;width:100%;max-width:935px;align-self:center">
+      <div style="display:flex">
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="back" label="Back" on-click="{{ closeFriend }}" hint-size="44px,44px"></x-import>
+      </div>
+      <header style="display:flex;align-items:center;gap:20px">
+        {{ fvAvatar }}
+        <div style="display:flex;flex:1;justify-content:space-around;gap:8px;max-width:360px">
+          <button type="button" onClick="{{ fvGoMade }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:20px;font-weight:700">{{ fvMakeCount }}</span><span style="font-size:13px">makes</span></button>
+          <button type="button" onClick="{{ fvGoWorking }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:20px;font-weight:700">{{ fvWorkingCount }}</span><span style="font-size:13px">on the go</span></button>
+          <button type="button" onClick="{{ openFvFriends }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:20px;font-weight:700">{{ fvFriendCount }}</span><span style="font-size:13px">friends</span></button>
+        </div>
+      </header>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <span style="font-family:var(--font-title);font-size:28px;line-height:1.05;overflow-wrap:anywhere">{{ fvName }}</span>
+        <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ fvUsername }}</span>
+      </div>
+      <sc-if value="{{ fvShowRel }}">
+        <div style="display:flex">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" icon="plus" variant="{{ fvRel.variant }}" disabled="{{ fvRel.disabled }}" on-click="{{ fvRel.onClick }}" hint-size="120px,36px">{{ fvRel.label }}</x-import>
+        </div>
+      </sc-if>
+      <sc-if value="{{ fvCanSee }}">
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="{{ fvBtn.working }}" size="sm" icon="projects" on-click="{{ fvGoWorking }}" hint-size="130px,36px">Working on</x-import>
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="{{ fvBtn.made }}" size="sm" icon="sparkle" on-click="{{ fvGoMade }}" hint-size="100px,36px">Made</x-import>
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="{{ fvBtn.wish }}" size="sm" icon="heart" on-click="{{ fvGoWish }}" hint-size="110px,36px">Wishlist</x-import>
+      </div>
+      <div style="border-top:1.5px solid var(--nn-dusty-rose)"></div>
+      <sc-if value="{{ fvLoading }}">
+        <p style="margin:0;font-size:15px;font-weight:600">Loading…</p>
+      </sc-if>
+      <sc-if value="{{ fvShowWorking }}">
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <sc-if value="{{ fvNoProjects }}">
+          <p style="margin:0;font-size:15px">Nothing shared right now.</p>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:16px">
+          <sc-for list="{{ fvProjects }}" as="p" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;background:var(--nn-card);border-radius:20px;overflow:hidden;min-width:0">
+              <div style="position:relative;aspect-ratio:1 / 1;background:{{ p.bg }};display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <img src="{{ p.image }}" alt="" style="{{ p.imageStyle }}">
+                <div style="position:absolute;top:10px;left:10px;display:flex">
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" status="{{ p.status }}" size="sm" hint-size="90px,28px"></x-import>
+                </div>
+              </div>
+              <div style="padding:12px 14px 16px;display:flex;flex-direction:column;gap:8px">
+                <h3 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:22px;line-height:1.05;text-wrap:pretty">{{ p.title }}</h3>
+                <div style="display:flex;flex-wrap:wrap;gap:6px">
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" craft="{{ p.craft }}" size="sm" hint-size="80px,28px"></x-import>
+                  <sc-if value="{{ p.category }}">
+                    <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="outline" size="sm" hint-size="80px,28px">{{ p.category }}</x-import>
+                  </sc-if>
+                </div>
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.ProgressBar" value="{{ p.progress }}" color="{{ p.backdrop }}" hint-size="100%,32px"></x-import>
+                <sc-if value="{{ p.yarnText }}">
+                  <p style="margin:0;font-size:14px;line-height:1.35"><span style="font-weight:600">Yarn: </span>{{ p.yarnText }}</p>
+                </sc-if>
+                <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ p.started }}</span>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+      </sc-if>
+      <sc-if value="{{ fvShowMade }}">
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <sc-if value="{{ fvNoPosts }}">
+          <p style="margin:0;font-size:15px">No shared makes yet.</p>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;width:100%;max-width:935px">
+          <sc-for list="{{ fvGrid }}" as="g" hint-placeholder-count="6">
+            <button type="button" onClick="{{ g.onClick }}" aria-label="{{ g.title }}" style="all:unset;cursor:pointer;position:relative;aspect-ratio:1 / 1;background:{{ g.bg }};display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:6px" style-active="opacity:0.8">
+              <img src="{{ g.image }}" alt="" style="{{ g.imageStyle }}">
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ fvGridMore }}">
+          <div style="display:flex;justify-content:center;width:100%;max-width:935px">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" on-click="{{ moreGrid }}" hint-size="140px,48px">Load more</x-import>
+          </div>
+        </sc-if>
+      </section>
+      </sc-if>
+      <sc-if value="{{ fvShowWish }}">
+      <section style="display:flex;flex-direction:column;gap:12px">
+        <sc-if value="{{ fvNoWish }}">
+          <p style="margin:0;font-size:15px">Nothing on their list yet.</p>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px;align-items:start">
+          <sc-for list="{{ fvWish }}" as="w" hint-placeholder-count="2">
+            <article style="background:var(--nn-card);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px">
+              <div style="display:flex;gap:12px;align-items:center">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IllustratedIcon" craft="{{ w.craft }}" size="{{ 52 }}" hint-size="52px,52px"></x-import>
+                <h3 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:22px;line-height:1.05">{{ w.title }}</h3>
+              </div>
+              <sc-if value="{{ w.yarn }}">
+                <p style="margin:0;font-size:15px;line-height:1.45"><strong style="font-weight:600">Yarn: </strong>{{ w.yarn }}</p>
+              </sc-if>
+            </article>
+          </sc-for>
+        </div>
+      </section>
+      </sc-if>
+      </sc-if>
+      <sc-if value="{{ fvLocked }}">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;padding:32px 16px;text-align:center">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IllustratedIcon" name="yarn-basket" tint="rose" size="{{ 80 }}" hint-size="80px,80px"></x-import>
+          <p style="margin:0;font-size:17px;line-height:1.45">This profile is friends only. Add them to see what they make.</p>
+        </div>
+      </sc-if>
+      <sc-if value="{{ fvIsFriend }}">
+        <div style="display:flex;justify-content:center;padding-top:16px">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ openUnfriend }}" hint-size="130px,36px">Remove friend</x-import>
+        </div>
+      </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showPost }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:12px;width:100%;max-width:600px;align-self:center">
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="back" label="Back" on-click="{{ closePost }}" hint-size="44px,44px"></x-import>
+        <h1 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:28px;line-height:1.05">{{ postHeading }}</h1>
+      </div>
+      <sc-if value="{{ postMissing }}">
+        <p style="margin:0;font-size:15px;width:100%;max-width:600px;align-self:center">This make isn't available anymore.</p>
+      </sc-if>
+      <div style="display:flex;flex-direction:column;width:100%;max-width:600px;align-self:center">
+        <sc-for list="{{ postDetail }}" as="p" hint-placeholder-count="1">
+          <article style="display:flex;flex-direction:column;gap:10px;padding:16px 0 20px;border-bottom:1.5px solid var(--nn-dusty-rose);min-width:0">
+            <button type="button" onClick="{{ p.onAuthor }}" aria-label="Open profile" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:10px;min-width:0">
+              {{ p.avatar }}
+              <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                <span style="display:flex;gap:6px;align-items:baseline;flex-wrap:wrap">
+                  <span style="font-size:15px;font-weight:600">{{ p.author }}</span>
+                  <span style="font-size:12px;color:var(--nn-ink-muted)">{{ p.handle }} · {{ p.ago }}</span>
+                </span>
+                <span style="font-size:12px;color:var(--nn-ink-muted)">{{ p.action }}</span>
+              </span>
+            </button>
+            <div style="position:relative;width:100%;max-width:360px;aspect-ratio:3 / 4;border-radius:20px;overflow:hidden;background:{{ p.bg }};display:flex;align-items:center;justify-content:center">
+              <img src="{{ p.image }}" alt="{{ p.title }}" style="{{ p.imageStyle }}">
+            </div>
+            <div style="display:flex;align-items:center;gap:2px;margin-left:-8px">
+              <button type="button" onClick="{{ p.onLike }}" aria-label="{{ p.likeLabel }}" style="width:40px;height:40px;border-radius:50%;border:none;background:{{ p.likeBg }};cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0" style-active="transform:scale(0.9)">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="heart" size="{{ 24 }}" hint-size="24px,24px"></x-import>
+              </button>
+              <span style="font-size:14px;font-weight:600;min-width:16px">{{ p.likeCount }}</span>
+              <button type="button" onClick="{{ p.onToggleComments }}" aria-label="Comments" style="width:40px;height:40px;border-radius:50%;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;margin-left:8px" style-active="transform:scale(0.9)">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="comment" size="{{ 22 }}" hint-size="22px,22px"></x-import>
+              </button>
+              <span style="font-size:14px;font-weight:600">{{ p.commentCount }}</span>
+            </div>
+            <sc-if value="{{ p.likedBy }}">
+              <span style="font-size:14px;line-height:1.4">Hearted by <span style="font-weight:600">{{ p.likedBy }}</span></span>
+            </sc-if>
+            <h3 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:22px;line-height:1.05;text-wrap:pretty">{{ p.title }}</h3>
+            <sc-if value="{{ p.isUpdate }}">
+              <sc-if value="{{ p.caption }}">
+                <p style="margin:0;font-size:15px;line-height:1.45;overflow-wrap:anywhere;text-wrap:pretty">{{ p.caption }}</p>
+              </sc-if>
+              <div style="display:flex;flex-direction:column;gap:4px;max-width:360px">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.ProgressBar" value="{{ p.progress }}" color="{{ p.barColor }}" hint-size="100%,32px"></x-import>
+              </div>
+            </sc-if>
+            <div style="display:flex;flex-wrap:wrap;gap:6px">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" craft="{{ p.craft }}" size="sm" hint-size="80px,28px"></x-import>
+              <sc-if value="{{ p.category }}">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="outline" size="sm" hint-size="80px,28px">{{ p.category }}</x-import>
+              </sc-if>
+            </div>
+            <sc-if value="{{ p.yarnText }}">
+              <p style="margin:0;font-size:14px;line-height:1.4"><span style="font-weight:600">Yarn: </span>{{ p.yarnText }}</p>
+            </sc-if>
+            <sc-if value="{{ p.daysText }}">
+              <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ p.daysText }}</span>
+            </sc-if>
+            <sc-if value="{{ p.canDeleteUpdate }}">
+              <button type="button" onClick="{{ p.onDeleteUpdate }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Delete this update</button>
+            </sc-if>
+            <sc-if value="{{ p.hasLastComment }}">
+              <p style="margin:0;font-size:14px;line-height:1.4;overflow-wrap:anywhere"><span style="font-weight:600">{{ p.lastComment.name }}</span> {{ p.lastComment.body }}</p>
+            </sc-if>
+            <sc-if value="{{ p.collapsed }}">
+              <button type="button" onClick="{{ p.onToggleComments }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ p.viewLabel }}</button>
+            </sc-if>
+            <sc-if value="{{ p.showComments }}">
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ p.comments }}" as="c" hint-placeholder-count="0">
+                  <div style="display:flex;gap:8px;align-items:flex-start;margin-left:{{ c.indent }}">
+                    {{ c.avatar }}
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+                      <span style="font-size:14px;line-height:1.4;overflow-wrap:anywhere"><span style="font-weight:600">{{ c.name }}</span> <sc-for list="{{ c.parts }}" as="t" hint-placeholder-count="1"><sc-if value="{{ t.plain }}"><span>{{ t.text }}</span></sc-if><sc-if value="{{ t.mention }}"><button type="button" onClick="{{ t.onClick }}" style="all:unset;cursor:pointer;font-weight:700;color:var(--nn-crimson-deep);text-decoration:underline;text-underline-offset:2px">{{ t.text }}</button></sc-if></sc-for></span>
+                      <span style="display:flex;gap:12px;align-items:center">
+                        <span style="font-size:12px;color:var(--nn-ink-muted)">{{ c.when }}</span>
+                        <button type="button" onClick="{{ c.onReply }}" style="all:unset;cursor:pointer;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Reply</button>
+                      </span>
+                    </div>
+                    <sc-if value="{{ c.canDelete }}">
+                      <button type="button" aria-label="Delete comment" onClick="{{ c.onDelete }}" style="all:unset;cursor:pointer;padding:6px">
+                        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="close" size="{{ 14 }}" hint-size="14px,14px"></x-import>
+                      </button>
+                    </sc-if>
+                  </div>
+                </sc-for>
+                <sc-if value="{{ p.replying }}">
+                  <div style="display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--nn-ink-muted)">
+                    <span>Replying to {{ p.replying }}</span>
+                    <button type="button" onClick="{{ p.onCancelReply }}" aria-label="Cancel reply" style="all:unset;cursor:pointer;padding:4px;display:flex">
+                      <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="close" size="{{ 12 }}" hint-size="12px,12px"></x-import>
+                    </button>
+                  </div>
+                </sc-if>
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center">
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" placeholder="{{ p.inputPh }}" value="{{ p.draft }}" on-change="{{ p.onDraft }}" hint-size="100%,44px"></x-import>
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" on-click="{{ p.onSend }}" hint-size="70px,36px">Post</x-import>
+                </div>
+                <sc-if value="{{ p.hasSuggest }}">
+                  <div style="display:flex;gap:6px;flex-wrap:wrap">
+                    <sc-for list="{{ p.suggest }}" as="u" hint-placeholder-count="0">
+                      <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="card" size="sm" on-click="{{ u.onClick }}" hint-size="120px,28px">{{ u.label }}</x-import>
+                    </sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-if>
+          </article>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showProjects }}" hint-placeholder-val="{{ false }}">
       <header style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
         <div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">
           <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ todayText }}</span>
@@ -157,12 +566,6 @@
       </div>
     </sc-if>
 
-    <sc-if value="{{ showProjects }}" hint-placeholder-val="{{ true }}">
-      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding-top:24px">
-        <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ accountText }}</span>
-        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ signOut }}" hint-size="90px,36px">Sign out</x-import>
-      </div>
-    </sc-if>
 
     <sc-if value="{{ showDetail }}" hint-placeholder-val="{{ false }}">
       <div style="display:flex;justify-content:space-between;align-items:center">
@@ -188,6 +591,9 @@
             <span style="font-size:14px;font-weight:600">{{ dp.tools }}</span>
           </sc-if>
           <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ dp.started }}</span>
+          <div style="display:flex">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="{{ dp.shareColor }}" size="sm" on-click="{{ dp.onToggleShare }}" hint-size="130px,28px">{{ dp.shareLabel }}</x-import>
+          </div>
         </div>
         <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Scallop" color="{{ dp.backdrop }}" hint-size="100%,150px">
           <img src="{{ dp.image }}" alt="" style="{{ dp.imageStyle }}">
@@ -205,6 +611,7 @@
         <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
           <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ dp.lastText }}</span>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="blue" size="sm" icon="check" on-click="{{ dp.onWorked }}" hint-size="170px,36px">I worked on it today</x-import>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="rose" size="sm" icon="camera" on-click="{{ dp.onShareUpdate }}" hint-size="160px,36px">Share an update</x-import>
         </div>
         <div style="display:flex;gap:8px;flex-wrap:wrap">
           <sc-for list="{{ dp.statuses }}" as="s" hint-placeholder-count="2">
@@ -282,17 +689,146 @@
       </sc-if>
     </sc-if>
 
+    <sc-if value="{{ showMyProfile }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;flex-direction:column;gap:16px;width:100%;max-width:935px;align-self:center">
+        <header style="display:flex;align-items:center;gap:20px;padding-top:8px">
+          {{ me.avatarLg }}
+          <div style="display:flex;flex:1;justify-content:space-around;gap:8px;max-width:360px">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:20px;font-weight:700">{{ myMakeCount }}</span><span style="font-size:13px">makes</span></div>
+            <button type="button" onClick="{{ goFriends }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:20px;font-weight:700">{{ friendsNum }}</span><span style="font-size:13px">friends</span></button>
+            <button type="button" onClick="{{ goWish }}" style="all:unset;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px"><span style="font-size:20px;font-weight:700">{{ wishCount }}</span><span style="font-size:13px">wishlist</span></button>
+          </div>
+        </header>
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <span style="font-family:var(--font-title);font-size:28px;line-height:1.05;overflow-wrap:anywhere">{{ me.name }}</span>
+          <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ me.username }} · {{ me.visibility }}</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ openProfileEdit }}" hint-size="110px,36px">Edit profile</x-import>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" icon="friends" on-click="{{ goFriends }}" hint-size="100px,36px">Friends</x-import>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" icon="heart" on-click="{{ goWish }}" hint-size="110px,36px">Wishlist</x-import>
+        </div>
+        <sc-if value="{{ hasRequests }}">
+          <section style="background:var(--nn-dusty-rose);border-radius:28px;padding:16px;display:flex;flex-direction:column;gap:12px">
+            <h2 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:20px;line-height:1.05">Friend requests</h2>
+            <sc-for list="{{ requestRows }}" as="r" hint-placeholder-count="1">
+              <div style="background:var(--nn-card);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+                {{ r.avatar }}
+                <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:120px">
+                  <span style="font-size:15px;font-weight:600">{{ r.name }}</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ r.username }}</span>
+                </div>
+                <div style="display:flex;gap:8px">
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" on-click="{{ r.onAccept }}" hint-size="80px,36px">Accept</x-import>
+                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ r.onDecline }}" hint-size="80px,36px">Decline</x-import>
+                </div>
+              </div>
+            </sc-for>
+          </section>
+        </sc-if>
+  
+        <div style="border-top:1.5px solid var(--nn-dusty-rose)"></div>
+        <sc-if value="{{ noMyPosts }}">
+          <p style="margin:0;font-size:15px;line-height:1.45">Your shared makes show up here. Share one from the Made tab.</p>
+        </sc-if>
+        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;width:100%;max-width:935px">
+          <sc-for list="{{ myGrid }}" as="g" hint-placeholder-count="6">
+            <button type="button" onClick="{{ g.onClick }}" aria-label="{{ g.title }}" style="all:unset;cursor:pointer;position:relative;aspect-ratio:1 / 1;background:{{ g.bg }};display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:6px" style-active="opacity:0.8">
+              <img src="{{ g.image }}" alt="" style="{{ g.imageStyle }}">
+            </button>
+          </sc-for>
+        </div>
+        <sc-if value="{{ myGridMore }}">
+          <div style="display:flex;justify-content:center;width:100%;max-width:935px">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" on-click="{{ moreGrid }}" hint-size="140px,48px">Load more</x-import>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showFriends }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:12px">
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="back" label="Back" on-click="{{ goProfile }}" hint-size="44px,44px"></x-import>
+          <h1 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:28px;line-height:1.05">Friends</h1>
+        </div>
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="blue" size="sm" icon="plus" on-click="{{ openAddFriend }}" hint-size="120px,36px">Add friend</x-import>
+      </div>
+      <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" placeholder="Search friends or find people…" value="{{ peopleQ }}" on-change="{{ onPeopleQ }}" style="max-width:560px" hint-size="100%,44px"></x-import>
+      <sc-if value="{{ showPeopleResults }}">
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:560px">
+          <span style="font-size:14px;font-weight:600">People on NitNac</span>
+          <sc-if value="{{ peopleMsg }}">
+            <p style="margin:0;font-size:14px;line-height:1.4">{{ peopleMsg }}</p>
+          </sc-if>
+          <sc-for list="{{ peopleResults }}" as="r" hint-placeholder-count="0">
+            <div style="background:var(--nn-card);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px">
+              <button type="button" onClick="{{ r.onOpen }}" style="all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;flex:1;min-width:0">
+                {{ r.avatar }}
+                <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                  <span style="font-size:15px;font-weight:600">{{ r.name }}</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ r.username }} · {{ r.vis }}</span>
+                </span>
+              </button>
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" variant="{{ r.variant }}" disabled="{{ r.disabled }}" on-click="{{ r.onAction }}" hint-size="90px,36px">{{ r.actionLabel }}</x-import>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hasRequests }}">
+        <section style="background:var(--nn-dusty-rose);border-radius:28px;padding:16px;display:flex;flex-direction:column;gap:12px">
+          <h2 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:20px;line-height:1.05">Friend requests</h2>
+          <sc-for list="{{ requestRows }}" as="r" hint-placeholder-count="1">
+            <div style="background:var(--nn-card);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              {{ r.avatar }}
+              <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:120px">
+                <span style="font-size:15px;font-weight:600">{{ r.name }}</span>
+                <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ r.username }}</span>
+              </div>
+              <div style="display:flex;gap:8px">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" on-click="{{ r.onAccept }}" hint-size="80px,36px">Accept</x-import>
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ r.onDecline }}" hint-size="80px,36px">Decline</x-import>
+              </div>
+            </div>
+          </sc-for>
+        </section>
+      </sc-if>
+      <sc-if value="{{ noFriendRows }}">
+        <p style="margin:0;font-size:15px">No friends yet. Add someone by their username or email.</p>
+      </sc-if>
+      <sc-if value="{{ noFriendMatch }}">
+        <p style="margin:0;font-size:15px">None of your friends match that.</p>
+      </sc-if>
+      <sc-if value="{{ hasFriendRows }}">
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.ListPanel" title="Your friends" color="blue" style="max-width:560px" hint-size="100%,140px">
+          <div style="display:flex;flex-direction:column;gap:8px;max-height:672px;overflow-y:auto;overscroll-behavior:contain">
+            <sc-for list="{{ friendRows }}" as="fr" hint-placeholder-count="2">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.ListRow" title="{{ fr.title }}" subtitle="{{ fr.sub }}" leading="{{ fr.avatar }}" chevron="{{ true }}" on-click="{{ fr.onClick }}" hint-size="100%,60px"></x-import>
+            </sc-for>
+          </div>
+        </x-import>
+      </sc-if>
+      <sc-if value="{{ hasOutgoing }}">
+        <div style="display:flex;flex-direction:column;gap:8px;max-width:560px">
+          <span style="font-size:14px;font-weight:600">Waiting for them to accept</span>
+          <sc-for list="{{ outgoingRows }}" as="o" hint-placeholder-count="1">
+            <div style="background:var(--nn-card);border-radius:20px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:12px">
+              <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+                <span style="font-size:15px;font-weight:600">{{ o.name }}</span>
+                <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ o.username }}</span>
+              </div>
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ o.onCancel }}" hint-size="80px,36px">Cancel</x-import>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </sc-if>
+
     <sc-if value="{{ showWish }}" hint-placeholder-val="{{ false }}">
-      <header style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
-        <div style="display:flex;flex-direction:column;gap:8px;padding-top:8px">
-          <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Wishlist</span>
-          <h1 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:44px;line-height:1.05">Next up</h1>
-        </div>
-        <div style="position:relative;width:112px;height:104px;flex-shrink:0">
-          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Sticker" shape="burst" color="rose" size="{{ 88 }}" rotate="{{ 10 }}" style="position:absolute;right:0;top:0" hint-size="88px,88px">Someday</x-import>
-          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IllustratedIcon" name="bow" tint="pear" size="{{ 50 }}" style="position:absolute;left:0;bottom:0;transform:rotate(-8deg)" hint-size="50px,50px"></x-import>
-        </div>
-      </header>
+      <div style="display:flex;align-items:center;gap:12px">
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="back" label="Back" on-click="{{ goProfile }}" hint-size="44px,44px"></x-import>
+        <h1 style="margin:0;font-family:var(--font-title);font-weight:400;font-size:28px;line-height:1.05">Wishlist</h1>
+      </div>
       <sc-if value="{{ noWish }}" hint-placeholder-val="{{ false }}">
         <p style="margin:0;font-size:17px">Nothing on the list. What's catching your eye?</p>
       </sc-if>
@@ -317,12 +853,22 @@
           <sc-if value="{{ w.link }}">
             <p style="margin:0;font-size:14px;line-height:1.4;overflow-wrap:anywhere">{{ w.link }}</p>
           </sc-if>
+          <div style="display:flex">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="{{ w.shareColor }}" size="sm" on-click="{{ w.onToggleShare }}" hint-size="130px,28px">{{ w.shareLabel }}</x-import>
+          </div>
           <div style="display:flex;gap:8px">
             <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" icon="arrow" on-click="{{ w.onStart }}" hint-size="100px,36px">Start it</x-import>
             <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ w.onEdit }}" hint-size="70px,36px">Edit</x-import>
           </div>
         </article>
       </sc-for>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ showMyProfile }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;padding-top:24px">
+        <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ accountText }}</span>
+        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ signOut }}" hint-size="90px,36px">Sign out</x-import>
       </div>
     </sc-if>
 
@@ -388,24 +934,22 @@
   </main>
 
   <sc-if value="{{ narrow }}" hint-placeholder-val="{{ true }}">
-  <nav aria-label="Main" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:448px;height:64px;background:var(--nn-crimson-deep);border-radius:28px;display:flex;align-items:center;padding:0 8px;box-sizing:border-box;z-index:20">
-    <sc-for list="{{ tabsLeft }}" as="t" hint-placeholder-count="2">
-      <button type="button" onClick="{{ t.onClick }}" aria-label="{{ t.label }}" style="flex:1;height:64px;background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
+  <nav aria-label="Main" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:448px;height:64px;background:var(--nn-crimson-deep);border-radius:28px;display:flex;align-items:center;padding:0 4px;box-sizing:border-box;z-index:20">
+    <sc-for list="{{ tabsMobile }}" as="t" hint-placeholder-count="5">
+      <button type="button" onClick="{{ t.onClick }}" aria-label="{{ t.label }}" style="position:relative;flex:1;min-width:0;height:64px;background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
         <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="{{ t.icon }}" size="{{ 22 }}" color="{{ t.color }}" hint-size="22px,22px"></x-import>
         <span style="font-family:var(--font-text);font-size:12px;font-weight:600;color:{{ t.color }}">{{ t.label }}</span>
+        <sc-if value="{{ t.dot }}">
+          <span style="position:absolute;top:10px;left:calc(50% + 6px);width:10px;height:10px;border-radius:50%;background:var(--nn-burnt-sienna);border:2px solid var(--nn-crimson-deep)"></span>
+        </sc-if>
       </button>
     </sc-for>
-    <div style="width:72px;flex-shrink:0"></div>
-    <sc-for list="{{ tabsRight }}" as="t" hint-placeholder-count="2">
-      <button type="button" onClick="{{ t.onClick }}" aria-label="{{ t.label }}" style="flex:1;height:64px;background:transparent;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:0">
-        <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="{{ t.icon }}" size="{{ 22 }}" color="{{ t.color }}" hint-size="22px,22px"></x-import>
-        <span style="font-family:var(--font-text);font-size:12px;font-weight:600;color:{{ t.color }}">{{ t.label }}</span>
-      </button>
-    </sc-for>
-    <button type="button" aria-label="{{ plusLabel }}" onClick="{{ onPlus }}" style="position:absolute;left:50%;top:-22px;margin-left:-30px;width:60px;height:60px;border-radius:50%;cursor:pointer;background:var(--nn-crimson-ink);border:5px solid var(--nn-cosmic-latte);display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--nn-crimson-deep)">
-      <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="plus" size="{{ 26 }}" stroke-width="{{ 2.5 }}" color="var(--nn-cosmic-latte)" hint-size="26px,26px"></x-import>
-    </button>
   </nav>
+  <sc-if value="{{ hasPlus }}">
+    <button type="button" aria-label="{{ plusLabel }}" onClick="{{ onPlus }}" style="position:fixed;right:max(24px, calc(50% - 212px));bottom:100px;z-index:21;width:56px;height:56px;border-radius:50%;cursor:pointer;background:var(--nn-crimson-ink);border:4px solid var(--nn-cosmic-latte);display:flex;align-items:center;justify-content:center;padding:0" style-hover="background:var(--nn-crimson-deep)">
+      <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="plus" size="{{ 24 }}" stroke-width="{{ 2.5 }}" color="var(--nn-cosmic-latte)" hint-size="24px,24px"></x-import>
+    </button>
+  </sc-if>
   </sc-if>
 
   </sc-if>
@@ -441,13 +985,6 @@
                 <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="card" size="sm" selected="{{ c.selected }}" on-click="{{ c.onClick }}" hint-size="90px,28px">{{ c.label }}</x-import>
               </sc-for>
             </div>
-            <sc-if value="{{ hasTypes }}">
-              <div style="display:flex;gap:6px;flex-wrap:wrap">
-                <sc-for list="{{ typeChips }}" as="c" hint-placeholder-count="3">
-                  <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="outline" size="sm" selected="{{ c.selected }}" on-click="{{ c.onClick }}" hint-size="70px,28px">{{ c.label }}</x-import>
-                </sc-for>
-              </div>
-            </sc-if>
           </div>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Hook or needles" placeholder="4 mm hook" value="{{ form.tools }}" on-change="{{ on.tools }}" hint-size="100%,72px"></x-import>
           <div style="display:flex;gap:12px;flex-wrap:wrap">
@@ -461,6 +998,12 @@
               <img src="{{ formPhoto }}" alt="" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:1.5px solid var(--nn-crimson-ink)">
             </sc-if>
             <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="rose" size="sm" icon="camera" on-click="{{ pickCover }}" hint-size="150px,36px">Cover photo</x-import>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="{{ formShareColor }}" on-click="{{ toggleFormShare }}" hint-size="150px,36px">{{ formShareLabel }}</x-import>
+            </div>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ formShareHint }}</span>
           </div>
           <sc-if value="{{ isNewProject }}">
             <section style="background:var(--nn-arctic-blue);border-radius:28px;padding:16px;display:flex;flex-direction:column;gap:12px">
@@ -577,6 +1120,12 @@
           </div>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Yarn idea" multiline="{{ true }}" rows="{{ 2 }}" placeholder="DK wool in two colours" value="{{ form.yarn }}" on-change="{{ on.yarn }}" hint-size="100%,100px"></x-import>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Pattern or link" placeholder="Book, designer, URL…" value="{{ form.link }}" on-change="{{ on.link }}" hint-size="100%,72px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="{{ formShareColor }}" on-click="{{ toggleFormShare }}" hint-size="150px,36px">{{ formShareLabel }}</x-import>
+            </div>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ formShareHint }}</span>
+          </div>
           <div style="padding:16px 0 8px;display:flex;flex-direction:column">
             <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ saveWish }}" dc-props="{{ bigBtn }}" hint-size="100%,56px">Save to wishlist</x-import>
           </div>
@@ -718,6 +1267,12 @@
                 </div>
               </div>
             </section>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="{{ formShareColor }}" on-click="{{ toggleFormShare }}" hint-size="150px,36px">{{ formShareLabel }}</x-import>
+            </div>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ formShareHint }}</span>
+          </div>
           <div style="padding:16px 0 8px;display:flex;flex-direction:column">
             <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" icon="sparkle" on-click="{{ confirmFinish }}" dc-props="{{ bigBtn }}" hint-size="100%,56px">Add to my makes</x-import>
           </div>
@@ -749,6 +1304,12 @@
               <input type="date" value="{{ mv.endIso }}" onChange="{{ mv.onEnd }}" style="min-height:44px;padding:10px 14px;box-sizing:border-box;width:100%;background:var(--nn-card);border:1.5px solid var(--nn-crimson-ink);border-radius:12px;font-family:var(--font-text);font-size:15px;color:var(--nn-crimson-ink)">
             </label>
           </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="{{ mv.shareColor }}" on-click="{{ mv.onToggleShare }}" hint-size="150px,36px">{{ mv.shareLabel }}</x-import>
+            </div>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ mv.shareHint }}</span>
+          </div>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="rose" size="sm" icon="camera" on-click="{{ pickMadePhoto }}" hint-size="150px,36px">{{ mv.photoLabel }}</x-import>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Changes to the pattern" multiline="{{ true }}" rows="{{ 3 }}" value="{{ mv.changes }}" on-change="{{ mv.onChanges }}" hint-size="100%,110px"></x-import>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Challenges" multiline="{{ true }}" rows="{{ 3 }}" value="{{ mv.challenges }}" on-change="{{ mv.onChallenges }}" hint-size="100%,110px"></x-import>
@@ -775,7 +1336,6 @@
               <div style="background:var(--nn-card);border-radius:20px;padding:8px 8px 8px 16px;display:flex;align-items:center;gap:12px">
                 <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
                   <span style="font-size:15px;font-weight:600">{{ c.label }}</span>
-                  <span style="font-size:12px;color:var(--nn-ink-muted)">{{ c.sub }}</span>
                 </div>
                 <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="close" label="Delete category" variant="outline" size="{{ 36 }}" on-click="{{ c.onDelete }}" hint-size="36px,36px"></x-import>
               </div>
@@ -796,6 +1356,136 @@
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" full-width="{{ true }}" on-click="{{ backToCats }}" hint-size="100%,48px">Keep it</x-import>
         </sc-if>
 
+        <sc-if value="{{ sh.activity }}">
+          <sc-for list="{{ requestRows }}" as="r" hint-placeholder-count="0">
+            <div style="background:var(--nn-dusty-rose);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+              {{ r.avatar }}
+              <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:120px">
+                <span style="font-size:15px;font-weight:600">{{ r.name }} wants to be friends</span>
+                <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ r.username }}</span>
+              </div>
+              <div style="display:flex;gap:8px">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" on-click="{{ r.onAccept }}" hint-size="80px,36px">Accept</x-import>
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" size="sm" on-click="{{ r.onDecline }}" hint-size="80px,36px">Decline</x-import>
+              </div>
+            </div>
+          </sc-for>
+          <sc-if value="{{ noActivity }}">
+            <p style="margin:0;font-size:15px">All quiet for now.</p>
+          </sc-if>
+          <div style="display:flex;flex-direction:column;gap:8px;max-height:392px;overflow-y:auto;overscroll-behavior:contain">
+            <sc-for list="{{ activityItems }}" as="a" hint-placeholder-count="0">
+              <button type="button" onClick="{{ a.onClick }}" style="all:unset;cursor:pointer;display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:20px;background:{{ a.bg }};box-sizing:border-box;flex-shrink:0">
+                {{ a.avatar }}
+                <span style="display:flex;flex-direction:column;gap:2px;min-width:0">
+                  <span style="font-size:15px;line-height:1.4;overflow-wrap:anywhere">{{ a.text }}</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ a.when }}</span>
+                </span>
+              </button>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sh.addFriend }}">
+          <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Username or email" placeholder="@mia or mia@example.com" value="{{ searchQ }}" on-change="{{ onSearchQ }}" hint-size="100%,72px"></x-import>
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" icon="search" on-click="{{ doSearch }}" hint-size="110px,48px">{{ searchCta }}</x-import>
+          </div>
+          <sc-if value="{{ searchMsg }}">
+            <p style="margin:0;font-size:14px;line-height:1.4;font-weight:600">{{ searchMsg }}</p>
+          </sc-if>
+          <sc-for list="{{ searchResults }}" as="r" hint-placeholder-count="0">
+            <div style="background:var(--nn-card);border-radius:20px;padding:12px;display:flex;align-items:center;gap:12px">
+              {{ r.avatar }}
+              <div style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+                <span style="font-size:15px;font-weight:600">{{ r.name }}</span>
+                <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ r.username }}</span>
+              </div>
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" size="sm" variant="{{ r.variant }}" disabled="{{ r.disabled }}" on-click="{{ r.onAction }}" hint-size="90px,36px">{{ r.actionLabel }}</x-import>
+            </div>
+          </sc-for>
+          <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Search finds exact usernames or emails. Your friend needs to sign up first.</span>
+        </sc-if>
+
+        <sc-if value="{{ sh.profileEdit }}">
+          <div style="display:flex;align-items:center;gap:16px">
+            {{ pfAvatar }}
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="rose" size="sm" icon="camera" on-click="{{ pickAvatar }}" hint-size="140px,36px">{{ pfPhotoLabel }}</x-import>
+          </div>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Your name" placeholder="Jina" value="{{ pfName }}" on-change="{{ onPfName }}" hint-size="100%,72px"></x-import>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="Username" placeholder="jina_makes" value="{{ pfUsername }}" on-change="{{ onPfUsername }}" hint-size="100%,72px"></x-import>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Friends find you by this. Lowercase letters, numbers and _.</span>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600">Who can see your profile</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+              <sc-for list="{{ pfVisChips }}" as="c" hint-placeholder-count="2">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Tag" color="card" selected="{{ c.selected }}" on-click="{{ c.onClick }}" hint-size="110px,36px">{{ c.label }}</x-import>
+              </sc-for>
+            </div>
+            <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ pfVisHint }}</span>
+          </div>
+          <sc-if value="{{ pfMsg }}">
+            <p style="margin:0;font-size:14px;line-height:1.4;font-weight:600">{{ pfMsg }}</p>
+          </sc-if>
+          <div style="padding:16px 0 8px;display:flex;flex-direction:column">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ saveProfile }}" dc-props="{{ bigBtn }}" hint-size="100%,56px">{{ pfCta }}</x-import>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sh.unfriend }}">
+          <p style="margin:0;font-size:17px;line-height:1.45">{{ unfriendText }}</p>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ confirmUnfriend }}" hint-size="100%,48px">Yes, remove</x-import>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="outline" full-width="{{ true }}" on-click="{{ closeSheet }}" hint-size="100%,48px">Keep them</x-import>
+        </sc-if>
+
+        <sc-if value="{{ sh.update }}">
+          <p style="margin:0;font-size:17px;line-height:1.45">{{ updIntro }}</p>
+          <section style="background:var(--nn-card);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:8px">
+            <span style="font-size:14px;font-weight:600">Progress · {{ updProgressText }}</span>
+            <div style="display:flex;align-items:center;gap:12px">
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="minus" label="Less progress" variant="outline" size="{{ 36 }}" on-click="{{ updLess }}" hint-size="36px,36px"></x-import>
+              <div style="flex:1;min-width:0">
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.ProgressBar" value="{{ updProgress }}" color="rose" track="card" hint-size="100%,32px"></x-import>
+              </div>
+              <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.IconButton" icon="plus" label="More progress" variant="outline" size="{{ 36 }}" on-click="{{ updMore }}" hint-size="36px,36px"></x-import>
+            </div>
+          </section>
+          <div style="display:flex;align-items:center;gap:16px">
+            <sc-if value="{{ updPhoto }}">
+              <img src="{{ updPhoto }}" alt="" style="width:96px;height:128px;border-radius:12px;object-fit:cover;border:1.5px solid var(--nn-crimson-ink)">
+            </sc-if>
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" variant="soft" color="rose" icon="camera" on-click="{{ pickUpdatePhoto }}" hint-size="170px,48px">{{ updPhotoLabel }}</x-import>
+          </div>
+          <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Input" label="What's new?" multiline="{{ true }}" rows="{{ 3 }}" placeholder="Finished the yoke! Starting the sleeves next." value="{{ updCaption }}" on-change="{{ onUpdCaption }}" hint-size="100%,110px"></x-import>
+          <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">Friends see this photo, your note, the progress and the yarn. Patterns and notes stay private.</span>
+          <div style="padding:16px 0 8px;display:flex;flex-direction:column">
+            <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" icon="sparkle" on-click="{{ postUpdate }}" dc-props="{{ bigBtn }}" hint-size="100%,56px">{{ updCta }}</x-import>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ sh.fvFriends }}">
+          <section style="background:var(--nn-arctic-blue);border-radius:28px;padding:8px;display:flex;flex-direction:column;gap:6px;max-height:60vh;overflow-y:auto">
+            <sc-if value="{{ fvfLoading }}">
+              <p style="margin:0;padding:12px;font-size:15px;font-weight:600">Loading…</p>
+            </sc-if>
+            <sc-if value="{{ fvfEmpty }}">
+              <p style="margin:0;padding:12px;font-size:15px">{{ fvfEmptyText }}</p>
+            </sc-if>
+            <sc-for list="{{ fvfRows }}" as="r" hint-placeholder-count="4">
+              <button type="button" onClick="{{ r.onOpen }}" style="all:unset;cursor:pointer;background:var(--nn-card);border-radius:20px;padding:10px 12px;display:flex;align-items:center;gap:12px;box-sizing:border-box">
+                {{ r.avatar }}
+                <span style="display:flex;flex-direction:column;gap:2px;flex:1;min-width:0">
+                  <span style="font-size:15px;font-weight:600">{{ r.name }}</span>
+                  <span style="font-size:12px;font-weight:600;color:var(--nn-ink-muted)">{{ r.username }}</span>
+                </span>
+                <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Icon" name="forward" size="{{ 18 }}" hint-size="18px,18px"></x-import>
+              </button>
+            </sc-for>
+          </section>
+        </sc-if>
+
         <sc-if value="{{ sh.frog }}">
           <p style="margin:0;font-size:17px;line-height:1.45">{{ frogText }}</p>
           <x-import component-from-global-scope="NitNacDesignSystem_8d99cf.Button" full-width="{{ true }}" on-click="{{ confirmFrog }}" hint-size="100%,48px">Yes, frog it</x-import>
@@ -809,9 +1499,9 @@
   <input type="file" ref="{{ photoRef }}" accept="image/*,.heic,.heif" onChange="{{ onPhotoFile }}" style="display:none">
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;checkInDays&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[60,75,90],&quot;default&quot;:60,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;checkInDays&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[60,75,90],&quot;default&quot;:60,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Behaviour&quot;},&quot;previewMode&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Behaviour&quot;}}">
 class Component extends DCLogic {
-  state = { auth: 'loading', user: null, authEmail: '', authPassword: '', authMode: 'in', authMsg: '', authBusy: false, data: null, urls: {}, tab: 'projects', openId: null, filter: 'active', cat: 'all', madeCat: 'all', madeSearch: '', groupBy: 'fiber', sheet: null, form: {}, toast: null, search: '', photoTarget: null };
+  state = { profile: undefined, pf: {}, pfMsg: '', pfBusy: false, social: { rows: [], friendIds: [], incoming: [], outgoing: [], posts: [], likes: [], comments: [], profiles: {} }, feedLoaded: false, openComments: {}, drafts: {}, replyTo: {}, gridShow: 9, friendView: null, fv: null, fvFrom: 'home', postId: null, postFrom: 'home', fvSection: 'made', peopleQ: '', peopleResults: [], peopleMsg: '', feedShow: 4, fetchLimit: 60, sharedUrls: {}, auth: 'loading', user: null, authEmail: '', authPassword: '', authMode: 'in', authMsg: '', authBusy: false, data: null, urls: {}, tab: 'home', openId: null, filter: 'active', cat: 'all', madeCat: 'all', madeSearch: '', groupBy: 'fiber', sheet: null, form: {}, toast: null, search: '', photoTarget: null };
   patternRef = React.createRef();
   photoRef = React.createRef();
   KEY = 'yarnbook-v1';
@@ -823,7 +1513,7 @@ class Component extends DCLogic {
     { id: 'baby', label: 'Baby items', types: [] }
   ];
   cats() { return (this.state.data && this.state.data.categories) || this.DEFAULT_CATS; }
-  catLabel(p) { const c = this.cats().find(x => x.id === p.category); return c ? (p.type ? c.label + ' · ' + p.type : c.label) : ''; }
+  catLabel(p) { const c = this.cats().find(x => x.id === p.category); return c ? c.label : ''; }
   DAY = 864e5;
 
   SB_URL = 'https://bsodofqrqpysiwywbctb.supabase.co';
@@ -831,24 +1521,154 @@ class Component extends DCLogic {
   componentWillUnmount() {
     this.mq && this.mq.removeEventListener('change', this.onMq);
     document.removeEventListener('visibilitychange', this.onVisible); window.removeEventListener('online', this.onOnline);
+    clearInterval(this._socT);
   }
   onMq = () => this.setState({ wide: this.mq.matches });
   componentDidMount() {
     this.mq = window.matchMedia('(min-width: 900px)'); this.onMq(); this.mq.addEventListener('change', this.onMq);
     document.addEventListener('visibilitychange', this.onVisible); window.addEventListener('online', this.onOnline);
     this.initSb();
+    this._socT = setInterval(() => { if (document.visibilityState === 'visible' && this.state.profile) this.loadSocial(); }, 60000);
   }
 
   async initSb() {
-    for (let i = 0; i < 150 && !window.supabase; i++) await new Promise(r => setTimeout(r, 100));
-    if (!window.supabase) return this.setState({ auth: 'out', authMsg: "Couldn't connect. Check your internet and reload." });
-    this.sb = window.supabase.createClient(this.SB_URL, this.SB_KEY);
+    if (false) this.sb = this.makeMock();
+    else {
+      for (let i = 0; i < 150 && !window.supabase; i++) await new Promise(r => setTimeout(r, 100));
+      if (!window.supabase) return this.setState({ auth: 'out', authMsg: "Couldn't connect. Check your internet and reload." });
+      this.sb = window.supabase.createClient(this.SB_URL, this.SB_KEY);
+    }
     this.sb.auth.onAuthStateChange((ev, session) => {
-      if (ev === 'SIGNED_OUT') this.setState({ auth: 'out', user: null, data: null, urls: {}, sheet: null, openId: null });
+      if (ev === 'SIGNED_OUT') { this._sharedDone = null; this._lastSig = null; this.setState({ auth: 'out', user: null, data: null, urls: {}, sheet: null, openId: null, profile: undefined, pf: {}, social: { rows: [], friendIds: [], incoming: [], outgoing: [], posts: [], likes: [], comments: [], profiles: {} }, feedLoaded: false, friendView: null, fv: null, tab: 'home', sharedUrls: {} }); }
       else if (session && (!this.state.user || this.state.user.id !== session.user.id)) this.onSignedIn(session.user);
     });
     const { data: { session } } = await this.sb.auth.getSession();
     if (session) this.onSignedIn(session.user); else this.setState({ auth: 'out' });
+  }
+
+  makeMock() {
+    const me = 'demo-me', uid = () => Math.random().toString(36).slice(2, 10);
+    const ago = hrs => new Date(Date.now() - hrs * 36e5).toISOString();
+    const ph = n => 'assets/photos/' + n;
+    const user = { id: me, email: 'you@example.com' };
+    const appData = this.seed(); appData.projects.forEach(p => { if (p.id === 'p4' || p.id === 'p5' || p.id === 'p2') p.shared = true; });
+    const db = {
+      app_state: [{ user_id: me, data: appData, updated_at: ago(1) }],
+      profiles: [
+        { id: 'mia', username: 'mia_makes', display_name: 'Mia', avatar_url: null, is_public: false, created_at: ago(900) },
+        { id: 'sam', username: 'samstitches', display_name: 'Sam', avatar_url: null, is_public: true, created_at: ago(900) },
+        { id: 'lou', username: 'lou_loops', display_name: 'Lou', avatar_url: null, is_public: false, created_at: ago(900) },
+        { id: 'ava', username: 'ava_knits', display_name: 'Ava Lindqvist', avatar_url: null, is_public: true, created_at: ago(900) },
+        { id: 'rae', username: 'rae_crochets', display_name: 'Rae', avatar_url: null, is_public: false, created_at: ago(900) }
+      ],
+      friendships: [
+        { id: 'f1', requester: me, addressee: 'mia', status: 'accepted', created_at: ago(800) },
+        { id: 'f2', requester: 'sam', addressee: me, status: 'accepted', created_at: ago(700) },
+        { id: 'f3', requester: 'lou', addressee: me, status: 'pending', created_at: ago(5) }
+      ],
+      posts: [
+        { id: 'pm1', user_id: 'mia', project_id: 'm1', title: 'Daisy coasters', craft: 'crochet', category: 'Home decor', photo: ph('crochet-flower.png'), yarns: [{ name: 'Cream · Catona', grams: 30 }, { name: 'Lemon · Catona', grams: 10 }], started_at: ago(200), finished_at: ago(30), posted_at: ago(3) },
+        { id: 'pu1', user_id: 'sam', project_id: 'upd:s2a', kind: 'update', title: 'Granny square blanket', craft: 'crochet', category: 'Home decor', photo: ph('crochet-motifs.jpg'), yarns: [{ name: 'Duck egg · Simply Aran' }], caption: '24 of 36 squares done! Joining them as I go this time.', progress: 65, started_at: ago(1440), posted_at: ago(1) },
+        { id: 'ps1', user_id: 'sam', project_id: 's1', title: 'Seed stitch scarf', craft: 'knitting', category: 'Accessories', photo: ph('knit-swatch.jpg'), yarns: [{ name: 'Rust · Merino Extra Fine', grams: 180 }], started_at: ago(900), finished_at: ago(50), posted_at: ago(26) },
+        { id: 'pm2', user_id: 'mia', project_id: 'm2', title: 'Bow hair clips', craft: 'crochet', category: 'Accessories', photo: ph('crochet-bow.png'), yarns: [{ name: 'Red · Ricorumi', grams: 12 }], started_at: ago(120), finished_at: ago(80), posted_at: ago(75) },
+        { id: 'pa1', user_id: 'ava', project_id: 'a1', title: 'Cherry bag charms', craft: 'crochet', category: 'Accessories', photo: ph('crochet-cherries.png'), yarns: [{ name: 'Red · Ricorumi', grams: 8 }], started_at: ago(300), finished_at: ago(100), posted_at: ago(40) },
+        { id: 'pme', user_id: me, project_id: 'p4', title: 'Sunflower coaster', craft: 'crochet', category: 'Home decor', photo: ph('crochet-sun.png'), yarns: [{ name: 'Lemon · Catona', grams: 40 }], started_at: ago(1200), finished_at: ago(1056), posted_at: ago(1056) }
+      ],
+      likes: [
+        { post_id: 'pm1', user_id: 'sam', created_at: ago(2) },
+        { post_id: 'ps1', user_id: 'mia', created_at: ago(20) },
+        { post_id: 'pme', user_id: 'mia', created_at: ago(4) },
+        { post_id: 'pme', user_id: 'sam', created_at: ago(6) }
+      ],
+      comments: [
+        { id: 'c1', post_id: 'pm1', user_id: 'sam', body: 'These are so cheerful! Pattern please?', created_at: ago(2) },
+        { id: 'c2', post_id: 'ps1', user_id: 'mia', body: 'That rust colour is perfect on you.', created_at: ago(19) },
+        { id: 'c3', post_id: 'pme', user_id: 'mia', body: 'Need one of these for my desk!', created_at: ago(4) },
+        { id: 'c4', post_id: 'pm1', user_id: 'mia', parent_id: 'c1', body: '@samstitches it\'s a free one, I\'ll send you the link!', created_at: ago(1) }
+      ],
+      shares: [
+        { user_id: 'mia', data: { projects: [{ id: 'm3', title: 'Strawberry amigurumi', craft: 'crochet', category: 'Home decor', progress: 40, status: 'in-progress', startedAt: Date.now() - 9 * 864e5, photo: ph('crochet-strawberry.png'), yarns: [{ name: 'Red · Ricorumi' }, { name: 'Green · Special DK' }] }], wish: [{ id: 'mw1', title: 'Cabled beanie', craft: 'knitting', yarn: 'Chunky merino in forest green' }] } },
+        { user_id: 'ava', data: { projects: [], wish: [{ id: 'aw1', title: 'Fair Isle mittens', craft: 'knitting', yarn: 'Fingering wool in four colours' }] } },
+        { user_id: 'sam', data: { projects: [{ id: 's2', title: 'Granny square blanket', craft: 'crochet', category: 'Home decor', progress: 65, status: 'in-progress', startedAt: Date.now() - 60 * 864e5, photo: ph('crochet-motifs.jpg'), yarns: [{ name: 'Duck egg · Simply Aran' }] }], wish: [] } }
+      ]
+    };
+    const emails = { rae: 'rae@example.com', mia: 'mia@example.com', sam: 'sam@example.com', lou: 'lou@example.com', ava: 'ava@example.com' };
+    const keys = { app_state: ['user_id'], profiles: ['id'], shares: ['user_id'], posts: ['user_id', 'project_id'], likes: ['post_id', 'user_id'] };
+    const clone = x => JSON.parse(JSON.stringify(x));
+    class Q {
+      constructor(t) { this.t = t; this.f = []; this.op = 'select'; this.ord = null; this.lim = null; this.one = null; this.p = null; }
+      select() { return this; }
+      eq(k, v) { this.f.push(r => r[k] === v); return this; }
+      in(k, vs) { this.f.push(r => vs.includes(r[k])); return this; }
+      order(k, o) { this.ord = [k, !o || o.ascending !== false]; return this; }
+      limit(n) { this.lim = n; return this; }
+      maybeSingle() { this.one = 'maybe'; return this; }
+      single() { this.one = 'single'; return this; }
+      insert(p) { this.op = 'insert'; this.p = p; return this; }
+      upsert(p) { this.op = 'upsert'; this.p = p; return this; }
+      update(p) { this.op = 'update'; this.p = p; return this; }
+      delete() { this.op = 'delete'; return this; }
+      then(res, rej) { return new Promise(r => setTimeout(r, 60)).then(() => this.run()).then(res, rej); }
+      run() {
+        const T = db[this.t] = db[this.t] || [], match = r => this.f.every(fn => fn(r)), key = keys[this.t] || ['id'], now = new Date().toISOString();
+        let out;
+        if (this.op === 'select') {
+          out = T.filter(match);
+          if (this.ord) { const [k, asc] = this.ord; out.sort((a, b) => (String(a[k]) < String(b[k]) ? -1 : 1) * (asc ? 1 : -1)); }
+          if (this.lim) out = out.slice(0, this.lim);
+        } else if (this.op === 'insert' || this.op === 'upsert') {
+          out = [];
+          for (const r0 of (Array.isArray(this.p) ? this.p : [this.p])) {
+            const r = { ...r0 };
+            if (this.t === 'profiles' && T.some(x => x.username === r.username && x.id !== r.id)) return { data: null, error: { message: 'duplicate key value violates unique constraint' } };
+            if (this.t === 'friendships' && T.some(x => (x.requester === r.requester && x.addressee === r.addressee) || (x.requester === r.addressee && x.addressee === r.requester))) return { data: null, error: { message: 'duplicate key value violates unique constraint' } };
+            const ex = this.op === 'upsert' ? T.find(x => key.every(k => x[k] === r[k])) : null;
+            if (ex) { Object.assign(ex, r); out.push(ex); continue; }
+            if (key.length === 1 && key[0] === 'id' && !r.id) r.id = uid();
+            if (!r.created_at) r.created_at = now;
+            if (this.t === 'posts' && !r.posted_at) r.posted_at = now;
+            if (this.t === 'friendships' && !r.status) r.status = 'pending';
+            T.push(r); out.push(r);
+          }
+        } else if (this.op === 'update') { out = T.filter(match); out.forEach(r => Object.assign(r, this.p)); }
+        else { out = T.filter(match); db[this.t] = T.filter(r => !match(r)); }
+        out = clone(out);
+        if (this.one) return out.length ? { data: out[0], error: null } : { data: null, error: this.one === 'single' ? { message: 'Not found' } : null };
+        return { data: out, error: null };
+      }
+    }
+    const files = {}, urlOf = f => !f ? null : (typeof f === 'string' ? f : URL.createObjectURL(f));
+    let cb = () => {};
+    return {
+      from: t => new Q(t),
+      rpc: async (fn, args) => {
+        if (fn === 'friends_of') {
+          const ids = db.friendships.filter(f => f.status === 'accepted' && (f.requester === args.uid || f.addressee === args.uid)).map(f => f.requester === args.uid ? f.addressee : f.requester);
+          const extra = { mia: ['sam', 'rae', 'lou', 'ava'], sam: ['mia', 'ava', 'lou', 'rae'], ava: ['sam', 'rae'] }[args.uid] || [];
+          const all = [...new Set([...ids, ...extra])].filter(x => x !== args.uid);
+          const youProf = db.profiles.find(p => p.id === me) || { id: me, username: 'you', display_name: 'You' };
+          return { data: clone(all.map(x => x === me ? youProf : db.profiles.find(p => p.id === x)).filter(Boolean)), error: null };
+        }
+        if (fn === 'friend_count') { const ids = db.friendships.filter(f => f.status === 'accepted' && (f.requester === args.uid || f.addressee === args.uid)).map(f => f.requester === args.uid ? f.addressee : f.requester); const extra = { mia: ['sam', 'rae', 'lou', 'ava'], sam: ['mia', 'ava', 'lou', 'rae'], ava: ['sam', 'rae'] }[args.uid] || []; return { data: new Set([...ids, ...extra].filter(x => x !== args.uid)).size, error: null }; }
+        const q = String((args && args.q) || '').trim().toLowerCase().replace(/^@/, '');
+        return { data: clone(db.profiles.filter(p => p.id !== me && (p.username === q || emails[p.id] === q || (p.is_public && q.length >= 2 && (p.username.includes(q) || p.display_name.toLowerCase().includes(q)))))), error: null };
+      },
+      storage: { from: b => ({
+        upload: async (path, blob) => { files[b + '/' + path] = blob; return { data: { path }, error: null }; },
+        download: async path => files[b + '/' + path] ? { data: files[b + '/' + path], error: null } : { data: null, error: { message: 'Not found' } },
+        createSignedUrls: async paths => ({ data: paths.map(p => ({ path: p, signedUrl: urlOf(files[b + '/' + p]) })), error: null }),
+        list: async folder => ({ data: Object.keys(files).filter(k => k.startsWith(b + '/' + folder + '/')).map(k => ({ name: k.split('/').pop() })), error: null }),
+        remove: async ps => { ps.forEach(p => { delete files[b + '/' + p]; }); return { error: null }; },
+        getPublicUrl: path => ({ data: { publicUrl: urlOf(files[b + '/' + path]) || '' } })
+      }) },
+      auth: {
+        getSession: async () => ({ data: { session: { user } } }),
+        onAuthStateChange: fn => { cb = fn; return { data: { subscription: { unsubscribe() {} } } }; },
+        signOut: async () => { setTimeout(() => cb('SIGNED_OUT', null)); return { error: null }; },
+        signInWithPassword: async () => { setTimeout(() => cb('SIGNED_IN', { user })); return { error: null }; },
+        signUp: async () => { setTimeout(() => cb('SIGNED_IN', { user })); return { data: { session: { user } }, error: null }; }
+      }
+    };
   }
   cacheKey() { return this.KEY + ':' + this.state.user.id; }
   migrate(d) {
@@ -861,6 +1681,7 @@ class Component extends DCLogic {
   async onSignedIn(user) {
     this.setState({ auth: 'loading', user, authMsg: '' });
     await new Promise(r => this.setState({ user }, r));
+    this.loadProfile(user);
     let cached = null, dirty = false;
     try { cached = JSON.parse(localStorage.getItem(this.cacheKey())); dirty = localStorage.getItem(this.cacheKey() + ':dirty') === '1'; } catch (e) {}
     if (cached) this.setState({ data: this.migrate(cached), auth: 'in' });
@@ -883,6 +1704,7 @@ class Component extends DCLogic {
   }
   onOnline = () => { if (this.state.data && localStorage.getItem(this.cacheKey() + ':dirty') === '1') this.push(this.state.data); };
   onVisible = async () => {
+    if (document.visibilityState === 'visible' && this.state.profile) this.loadSocial();
     if (document.visibilityState !== 'visible' || !this.sb || !this.state.user || this._pushT || this.state.sheet) return;
     if (localStorage.getItem(this.cacheKey() + ':dirty') === '1') return this.push(this.state.data);
     const { data: row } = await this.sb.from('app_state').select('data, updated_at').eq('user_id', this.state.user.id).maybeSingle();
@@ -974,7 +1796,256 @@ class Component extends DCLogic {
     try { localStorage.setItem(this.cacheKey(), JSON.stringify(data)); localStorage.setItem(this.cacheKey() + ':dirty', '1'); } catch (e) {}
     clearTimeout(this._pushT);
     this._pushT = setTimeout(() => { this._pushT = null; this.push(this.state.data); }, 800);
+    this.schedulePublish();
   }
+
+  colorFor(id) { const c = ['rose', 'pear', 'blue', 'sienna']; let n = 0; for (const ch of String(id || '')) n = (n * 31 + ch.charCodeAt(0)) >>> 0; return c[n % 4]; }
+  avatarEl(p, size) {
+    size = size || 40; p = p || {};
+    if (p.avatar_url) return React.createElement('img', { src: p.avatar_url, alt: '', style: { width: size, height: size, borderRadius: '50%', objectFit: 'cover', border: '1.5px solid var(--nn-crimson-ink)', display: 'block', flexShrink: 0, boxSizing: 'border-box' } });
+    const name = p.display_name || p.username || '?';
+    const A = window.NitNacDesignSystem_8d99cf && window.NitNacDesignSystem_8d99cf.Avatar;
+    if (A) return React.createElement('span', { style: { display: 'block', flexShrink: 0 } }, React.createElement(A, { name, color: this.colorFor(p.id), size }));
+    return React.createElement('span', { style: { width: size, height: size, borderRadius: '50%', background: 'var(--nn-dusty-rose)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 600, flexShrink: 0 } }, name[0].toUpperCase());
+  }
+  relShort(iso) {
+    const m = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 60000));
+    if (m < 1) return 'just now'; if (m < 60) return m + 'm ago';
+    const hr = Math.round(m / 60); if (hr < 24) return hr + 'h ago';
+    const dd = Math.round(hr / 24); if (dd < 7) return dd + 'd ago';
+    return this.date(Date.parse(iso));
+  }
+  async loadProfile(user) {
+    const { data, error } = await this.sb.from('profiles').select('*').eq('id', user.id).maybeSingle();
+    if (this.state.user && this.state.user.id !== user.id) return;
+    const suggest = (user.email || '').split('@')[0].toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 20);
+    if (error) return this.setState({ profile: null, pf: { name: '', username: suggest, avatarUrl: null }, pfMsg: /relation|schema cache|does not exist/i.test(error.message) ? "Friends aren't set up yet. Run supabase-social.sql in Supabase, then reload." : error.message });
+    this.setState({ profile: data || null, pf: data ? {} : { name: '', username: suggest, avatarUrl: null }, pfMsg: '' });
+    if (data) { this.loadSocial(); this.schedulePublish(); }
+  }
+  saveProfile = async () => {
+    const pf = this.state.pf || {}, name = (pf.name || '').trim(), username = (pf.username || '').trim().toLowerCase().replace(/^@/, '');
+    if (!name) return this.setState({ pfMsg: 'Add your name.' });
+    if (!/^[a-z0-9_]{3,20}$/.test(username)) return this.setState({ pfMsg: 'Usernames are 3 to 20 lowercase letters, numbers or _.' });
+    this.setState({ pfBusy: true, pfMsg: '' });
+    const { data, error } = await this.sb.from('profiles').upsert({ id: this.state.user.id, display_name: name, username, avatar_url: pf.avatarUrl || null, is_public: !!pf.isPublic }).select().single();
+    this.setState({ pfBusy: false });
+    if (error) return this.setState({ pfMsg: /duplicate|unique/i.test(error.message) ? 'That username is taken. Try another.' : error.message });
+    const first = !this.state.profile;
+    this.setState(s => ({ profile: data, sheet: null, tab: first ? 'home' : s.tab, social: { ...s.social, profiles: { ...s.social.profiles, [data.id]: data } } }));
+    if (first) { this.loadSocial(); this.schedulePublish(); } else this.flash('Profile saved.');
+  };
+  openProfileEdit = () => { const p = this.state.profile || {}; this.setState({ pf: { name: p.display_name || '', username: p.username || '', avatarUrl: p.avatar_url || null, isPublic: !!p.is_public }, pfMsg: '', sheet: 'profileEdit', form: {} }); };
+  async loadSocial() {
+    if (!this.sb || !this.state.user || this._socBusy) return;
+    this._socBusy = true;
+    try {
+      const me = this.state.user.id;
+      const { data: fr } = await this.sb.from('friendships').select('*');
+      const rows = fr || [];
+      const friendIds = rows.filter(r => r.status === 'accepted').map(r => r.requester === me ? r.addressee : r.requester);
+      const incoming = rows.filter(r => r.status === 'pending' && r.addressee === me);
+      const outgoing = rows.filter(r => r.status === 'pending' && r.requester === me);
+      const { data: posts } = await this.sb.from('posts').select('*').in('user_id', [me, ...friendIds]).order('posted_at', { ascending: false }).limit(this.state.fetchLimit || 60);
+      const ps = posts || [], ids = ps.map(p => p.id);
+      let likes = [], comments = [];
+      if (ids.length) {
+        const [l, c] = await Promise.all([this.sb.from('likes').select('*').in('post_id', ids), this.sb.from('comments').select('*').in('post_id', ids).order('created_at')]);
+        likes = l.data || []; comments = c.data || [];
+      }
+      const people = [...new Set([me, ...friendIds, ...incoming.map(r => r.requester), ...outgoing.map(r => r.addressee), ...ps.map(p => p.user_id), ...likes.map(x => x.user_id), ...comments.map(x => x.user_id)])];
+      const { data: profs } = await this.sb.from('profiles').select('*').in('id', people);
+      const profiles = {}; (profs || []).forEach(p => { profiles[p.id] = p; });
+      if (!this.state.user || this.state.user.id !== me) return;
+      const fvid = this.state.friendView;
+      if (fvid && fvid !== me && !friendIds.includes(fvid) && (this.state.tab === 'friend' || this.state.tab === 'post')) {
+        const x = await this.fetchUserPosts(fvid);
+        ps.push(...x.posts.filter(p => !ps.some(q => q.id === p.id))); likes.push(...x.likes); comments.push(...x.comments);
+      }
+      this.setState({ social: { rows, friendIds, incoming, outgoing, posts: ps, likes, comments, profiles }, feedLoaded: true });
+      this.signPhotos(ps.map(p => p.photo));
+    } catch (e) { this.setState({ feedLoaded: true }); }
+    finally { this._socBusy = false; }
+  }
+  async fetchUserPosts(id) {
+    const { data: posts } = await this.sb.from('posts').select('*').eq('user_id', id).order('posted_at', { ascending: false }).limit(60);
+    const ps = posts || [], ids = ps.map(p => p.id);
+    if (!ids.length) return { posts: [], likes: [], comments: [] };
+    const [l, c] = await Promise.all([this.sb.from('likes').select('*').in('post_id', ids), this.sb.from('comments').select('*').in('post_id', ids).order('created_at')]);
+    return { posts: ps, likes: l.data || [], comments: c.data || [] };
+  }
+  onPeopleQ = v => {
+    this.setState({ peopleQ: v });
+    clearTimeout(this._pqT);
+    if (String(v).trim().length < 2) return this.setState({ peopleResults: [], peopleMsg: '' });
+    this._pqT = setTimeout(() => this.searchPeople(String(v).trim()), 400);
+  };
+  searchPeople = async q => {
+    const { data, error } = await this.sb.rpc('find_user', { q });
+    if (q !== String(this.state.peopleQ).trim()) return;
+    const res = data || [];
+    this.setState(st => { const pr = { ...st.social.profiles }; res.forEach(p => { pr[p.id] = { ...pr[p.id], ...p }; }); return { peopleResults: res, peopleMsg: error ? error.message : (res.length ? '' : 'No one found. Friends-only profiles only show up for their exact username or email.'), social: { ...st.social, profiles: pr } }; });
+  };
+  async signPhotos(paths) {
+    const need = [...new Set((paths || []).filter(p => p && !p.startsWith('assets/') && !this.state.sharedUrls[p]))];
+    if (!need.length) return;
+    const { data } = await this.sb.storage.from('shared').createSignedUrls(need, 60 * 60 * 24 * 7);
+    const m = {}; (data || []).forEach((r, i) => { if (r.signedUrl) m[r.path || need[i]] = r.signedUrl; });
+    this.setState(s => ({ sharedUrls: { ...s.sharedUrls, ...m } }));
+  }
+  sharedSrc(p) { if (!p) return null; return p.startsWith('assets/') ? p : (this.state.sharedUrls[p] || null); }
+  async ensureShared(ref) {
+    if (!ref) return null;
+    if (!ref.startsWith('idb:')) return ref;
+    const id = ref.slice(4), uid = this.state.user.id, path = uid + '/' + id;
+    if (!this._sharedDone) { const { data } = await this.sb.storage.from('shared').list(uid, { limit: 1000 }); this._sharedDone = new Set((data || []).map(o => o.name)); }
+    if (this._sharedDone.has(id)) return path;
+    const { data: blob, error } = await this.sb.storage.from('files').download(path);
+    if (error || !blob) return null;
+    const { error: e2 } = await this.sb.storage.from('shared').upload(path, blob, { contentType: blob.type || 'image/jpeg', upsert: true });
+    if (e2) return null;
+    this._sharedDone.add(id);
+    return path;
+  }
+  schedulePublish() { clearTimeout(this._pubT); this._pubT = setTimeout(() => this.publish(), 1500); }
+  async publish() {
+    if (this._publishing) { this._pubAgain = true; return; }
+    const d = this.state.data, me = this.state.user && this.state.user.id;
+    if (!d || !me || !this.state.profile) return;
+    this._publishing = true;
+    try {
+      const yarnOut = p => (p.yarns || []).map(u => { const y = u.yarnId && d.stash.find(s => s.id === u.yarnId); return { name: this.yarnLabel(y || u) || 'Yarn', cols: y ? this.cols(y) : (u.cols || [u.hex]), grams: u.grams }; });
+      const catName = p => (this.cats().find(c => c.id === p.category) || {}).label || '';
+      const projects = [];
+      for (const p of d.projects.filter(x => x.shared && x.status !== 'finished')) projects.push({ id: p.id, title: p.title, craft: p.craft, category: catName(p), progress: p.progress, status: p.status, startedAt: p.startedAt, photo: await this.ensureShared(p.photo), yarns: yarnOut(p) });
+      const wish = d.wish.filter(w => w.shared).map(w => ({ id: w.id, title: w.title, craft: w.craft, yarn: w.yarn || '' }));
+      const fin = d.projects.filter(x => x.shared && x.status === 'finished');
+      const rows = [];
+      for (const p of fin) rows.push({ user_id: me, project_id: p.id, title: p.title, craft: p.craft, category: catName(p), photo: await this.ensureShared(p.finishPhoto || p.photo), yarns: yarnOut(p), started_at: new Date(p.startedAt).toISOString(), finished_at: new Date(p.finishedAt || Date.now()).toISOString() });
+      const sig = JSON.stringify({ projects, wish, rows });
+      if (sig !== this._lastSig) {
+        const r1 = await this.sb.from('shares').upsert({ user_id: me, data: { projects, wish }, updated_at: new Date().toISOString() });
+        if (rows.length) await this.sb.from('posts').upsert(rows, { onConflict: 'user_id,project_id' });
+        const { data: mine } = await this.sb.from('posts').select('id, project_id').eq('user_id', me);
+        const keep = new Set(fin.map(p => p.id));
+        const drop = (mine || []).filter(r => !keep.has(r.project_id) && !String(r.project_id).startsWith('upd:')).map(r => r.id);
+        if (drop.length) await this.sb.from('posts').delete().in('id', drop);
+        if (!r1.error) this._lastSig = sig;
+        this.loadSocial();
+      }
+    } catch (e) {}
+    this._publishing = false;
+    if (this._pubAgain) { this._pubAgain = false; this.schedulePublish(); }
+  }
+  openActivity = () => { this.openSheet('activity', { seenBefore: (this.state.data && this.state.data.seenAt) || 0 }); this.update(x => { x.seenAt = Date.now(); }); this.loadSocial(); };
+  openAddFriend = () => this.openSheet('addFriend', { q: '', results: [], searchMsg: '' });
+  searchFriend = async () => {
+    const q = (this.state.form.q || '').trim();
+    if (!q) return this.setForm('searchMsg', 'Type a username or email.');
+    this.setState(st => ({ form: { ...st.form, searching: true, searchMsg: '' } }));
+    const { data, error } = await this.sb.rpc('find_user', { q });
+    this.setState(st => ({ form: { ...st.form, searching: false, results: data || [], searchMsg: error ? error.message : (data && data.length ? '' : 'No one found. Check the spelling, or ask them to sign up first.') } }));
+    if (data && data.length) this.setState(st => { const pr = { ...st.social.profiles }; data.forEach(p => { pr[p.id] = { ...pr[p.id], ...p }; }); return { social: { ...st.social, profiles: pr } }; });
+  };
+  sendRequest = async id => {
+    const { error } = await this.sb.from('friendships').insert({ requester: this.state.user.id, addressee: id });
+    this.flash(error ? (/duplicate|unique/i.test(error.message) ? "There's already a request between you two." : "Couldn't send that. Try again.") : 'Request sent!');
+    this.loadSocial();
+  };
+  acceptRequest = async r => {
+    const { error } = await this.sb.from('friendships').update({ status: 'accepted' }).eq('id', r.id);
+    this.flash(error ? "Couldn't accept that. Try again." : "You're friends now!");
+    this.loadSocial();
+  };
+  removeFriendship = async (r, msg) => {
+    const { error } = await this.sb.from('friendships').delete().eq('id', r.id);
+    this.flash(error ? "Couldn't do that. Try again." : msg);
+    this.loadSocial();
+  };
+  openFriend = async id => {
+    if (!id) return;
+    if (this.state.tab === 'post' && this.state.postFrom === 'friend' && id === this.state.friendView) return this.setState({ tab: 'friend', postId: null });
+    if (id === this.state.user.id) return this.goTab('profile');
+    this.setState(s => ({ fvFrom: s.tab === 'friend' ? s.fvFrom : s.tab, tab: 'friend', friendView: id, fv: null, fvFriends: null, fvSection: 'made', gridShow: 9, sheet: null, openId: null }));
+    window.scrollTo(0, 0);
+    const { data } = await this.sb.from('shares').select('data').eq('user_id', id).maybeSingle();
+    if (this.state.friendView !== id) return;
+    const fv = (data && data.data) || { projects: [], wish: [] };
+    this.setState({ fv });
+    this.sb.rpc('friend_count', { uid: id }).then(({ data }) => { if (this.state.friendView === id) this.setState({ fvFriends: typeof data === 'number' ? data : null }); });
+    if (!this.state.social.friendIds.includes(id)) {
+      const [x, pr] = await Promise.all([this.fetchUserPosts(id), this.sb.from('profiles').select('*').eq('id', id).maybeSingle()]);
+      if (this.state.friendView !== id) return;
+      this.setState(st => ({ social: { ...st.social,
+        posts: [...st.social.posts, ...x.posts.filter(p => !st.social.posts.some(q => q.id === p.id))],
+        likes: [...st.social.likes, ...x.likes.filter(l => !st.social.likes.some(m => m.post_id === l.post_id && m.user_id === l.user_id))],
+        comments: [...st.social.comments, ...x.comments.filter(c => !st.social.comments.some(m => m.id === c.id))],
+        profiles: pr.data ? { ...st.social.profiles, [id]: pr.data } : st.social.profiles } }));
+      this.signPhotos(x.posts.map(p => p.photo));
+    }
+    this.signPhotos((fv.projects || []).map(p => p.photo));
+  };
+  openFvFriends = async () => {
+    const id = this.state.friendView;
+    this.setState({ sheet: 'fvFriends', form: {}, fvfList: null });
+    const { data, error } = await this.sb.rpc('friends_of', { uid: id });
+    if (this.state.friendView !== id || this.state.sheet !== 'fvFriends') return;
+    const list = error ? [] : (data || []);
+    this.setState(st => { const pr = { ...st.social.profiles }; list.forEach(p => { pr[p.id] = { ...pr[p.id], ...p }; }); return { fvfList: list, fvfError: !!error, social: { ...st.social, profiles: pr } }; });
+  };
+  openUpdate(p) { this.openSheet('update', { pid: p.id, progress: p.progress || 0, caption: '', updRef: null }); }
+  postUpdate = async () => {
+    const f = this.state.form, d = this.state.data, me = this.state.user.id, p = d.projects.find(x => x.id === f.pid);
+    if (!p || this._posting) return;
+    if (!(f.caption || '').trim() && !f.updRef && !p.photo) return this.flash('Add a photo or a few words first.');
+    this._posting = true; this.setForm('posting', true);
+    const photo = await this.ensureShared(f.updRef || p.photo);
+    const catName = (this.cats().find(c => c.id === p.category) || {}).label || '';
+    const yarns = (p.yarns || []).map(u => { const y = u.yarnId && d.stash.find(s => s.id === u.yarnId); return { name: this.yarnLabel(y || u) || 'Yarn', cols: y ? this.cols(y) : (u.cols || [u.hex]) }; });
+    const { error } = await this.sb.from('posts').insert({ user_id: me, project_id: 'upd:' + this.uid(), kind: 'update', title: p.title, craft: p.craft, category: catName, photo, yarns, caption: (f.caption || '').trim(), progress: f.progress, started_at: new Date(p.startedAt).toISOString() });
+    this._posting = false;
+    if (error) { this.setForm('posting', false); return this.flash(/column/i.test(error.message) ? 'Run supabase-updates.sql in Supabase first.' : "Couldn't post that. Try again."); }
+    this.patchProject(p.id, { progress: f.progress, lastWorked: Date.now(), status: 'in-progress' });
+    this.closeSheet(); this.flash('Update shared with your friends!');
+    this.loadSocial();
+  };
+  deleteUpdate = async post => {
+    this.setState(s => ({ social: { ...s.social, posts: s.social.posts.filter(x => x.id !== post.id) }, tab: s.tab === 'post' ? (s.postFrom || 'home') : s.tab }));
+    const { error } = await this.sb.from('posts').delete().eq('id', post.id);
+    this.flash(error ? "Couldn't delete that." : 'Update deleted.');
+    if (error) this.loadSocial();
+  };
+  closeFriend = () => this.goTab(this.state.fvFrom || 'home');
+  confirmUnfriend = async () => {
+    const pid = this.state.form.pid, me = this.state.user.id;
+    const r = this.state.social.rows.find(x => x.status === 'accepted' && ((x.requester === me && x.addressee === pid) || (x.requester === pid && x.addressee === me)));
+    this.closeSheet();
+    if (r) await this.removeFriendship(r, 'Removed.');
+    this.closeFriend();
+  };
+  toggleLike = async p => {
+    const me = this.state.user.id, liked = this.state.social.likes.some(l => l.post_id === p.id && l.user_id === me);
+    this.setState(s => ({ social: { ...s.social, likes: liked ? s.social.likes.filter(l => !(l.post_id === p.id && l.user_id === me)) : [...s.social.likes, { post_id: p.id, user_id: me, created_at: new Date().toISOString() }] } }));
+    const { error } = liked ? await this.sb.from('likes').delete().eq('post_id', p.id).eq('user_id', me) : await this.sb.from('likes').insert({ post_id: p.id, user_id: me });
+    if (error) { this.flash("Couldn't save that. Try again."); this.loadSocial(); }
+  };
+  sendComment = async p => {
+    const body = (this.state.drafts[p.id] || '').trim();
+    if (!body) return;
+    this.setState(s => ({ drafts: { ...s.drafts, [p.id]: '' } }));
+    const parent = (this.state.replyTo[p.id] || {}).id || null;
+    this.setState(s => ({ replyTo: { ...s.replyTo, [p.id]: null } }));
+    const row = { post_id: p.id, user_id: this.state.user.id, body };
+    if (parent) row.parent_id = parent;
+    const { data, error } = await this.sb.from('comments').insert(row).select().single();
+    if (error) { this.flash("Couldn't post that. Try again."); this.setState(s => ({ drafts: { ...s.drafts, [p.id]: body } })); return; }
+    this.setState(s => ({ social: { ...s.social, comments: [...s.social.comments, data] } }));
+  };
+  deleteComment = async c => {
+    this.setState(s => ({ social: { ...s.social, comments: s.social.comments.filter(x => x.id !== c.id) } }));
+    const { error } = await this.sb.from('comments').delete().eq('id', c.id);
+    if (error) { this.flash("Couldn't delete that."); this.loadSocial(); }
+  };
   update(fn) { const d = JSON.parse(JSON.stringify(this.state.data)); fn(d); this.save(d); }
   uid() { return Math.random().toString(36).slice(2, 10); }
   flash(t) { clearTimeout(this._t); this.setState({ toast: t }); this._t = setTimeout(() => this.setState({ toast: null }), 2600); }
@@ -1034,21 +2105,23 @@ class Component extends DCLogic {
   setForm(k, v) { this.setState(s => ({ form: { ...s.form, [k]: v } })); }
   openSheet(sheet, form) { this.setState({ sheet, form: form || {} }); }
   closeSheet = () => this.setState({ sheet: null });
-  goTab(tab) { this.setState({ tab, openId: null, sheet: null }); window.scrollTo(0, 0); }
+  goTab(tab) { this.setState({ tab, openId: null, sheet: null, friendView: null, fv: null, gridShow: 9 }); window.scrollTo(0, 0); if (tab === 'home' || tab === 'profile' || tab === 'friends') this.loadSocial(); }
+  openPost(id) { this.setState(s => ({ postFrom: s.tab, tab: 'post', postId: id })); window.scrollTo(0, 0); }
+  closePost = () => { this.setState(s => ({ tab: s.postFrom || 'home', postId: null })); window.scrollTo(0, 0); };
   openProject(id) { this.setState({ tab: 'projects', openId: id }); window.scrollTo(0, 0); }
 
-  openProjectSheet(p, extra) { this.openSheet('project', p ? { id: p.id, title: p.title, craft: p.craft, category: p.category || '', type: p.type || '', scrap: !!p.scrap, tools: p.tools || '', photo: p.photo || null, startDate: this.iso(p.startedAt) } : { title: '', craft: 'crochet', category: '', type: '', scrap: false, tools: '', photo: null, startDate: this.iso(), patterns: [], ...this.addDefaults(), ...(extra || {}) }); }
+  openProjectSheet(p, extra) { this.openSheet('project', p ? { shared: !!p.shared, id: p.id, title: p.title, craft: p.craft, category: p.category || '', type: p.type || '', scrap: !!p.scrap, tools: p.tools || '', photo: p.photo || null, startDate: this.iso(p.startedAt) } : { shared: false, title: '', craft: 'crochet', category: '', type: '', scrap: false, tools: '', photo: null, startDate: this.iso(), patterns: [], ...this.addDefaults(), ...(extra || {}) }); }
   saveProject = () => {
     const f = this.state.form;
     if (!f.title.trim()) return this.flash('Give it a name first.');
     const now = Date.now();
     if (f.id) {
-      this.update(d => { const p = d.projects.find(x => x.id === f.id); Object.assign(p, { title: f.title.trim(), craft: f.craft, category: f.category, type: f.type, scrap: f.scrap, tools: f.tools, photo: f.photo, startedAt: this.fromIso(f.startDate, p.startedAt) }); });
+      this.update(d => { const p = d.projects.find(x => x.id === f.id); Object.assign(p, { title: f.title.trim(), craft: f.craft, category: f.category, type: f.type, scrap: f.scrap, tools: f.tools, photo: f.photo, shared: !!f.shared, startedAt: this.fromIso(f.startDate, p.startedAt) }); });
       this.closeSheet(); return;
     }
     const id = this.uid();
     this.update(d => {
-      d.projects.unshift({ id, title: f.title.trim(), craft: f.craft, category: f.category, type: f.type, scrap: f.scrap, tools: f.tools, photo: f.photo, status: 'in-progress', progress: 0, next: '', notes: f.notes || '',
+      d.projects.unshift({ id, title: f.title.trim(), craft: f.craft, category: f.category, type: f.type, scrap: f.scrap, tools: f.tools, photo: f.photo, shared: !!f.shared, status: 'in-progress', progress: 0, next: '', notes: f.notes || '',
         startedAt: this.fromIso(f.startDate, now), lastWorked: now, patterns: f.patterns || [], yarns: this.extraToYarns(f.extra, d.stash), reflections: { changes: '', challenges: '', nextTime: '' } });
       if (f.wishId) d.wish = d.wish.filter(w => w.id !== f.wishId);
     });
@@ -1079,11 +2152,11 @@ class Component extends DCLogic {
   };
   deleteYarn = () => { const id = this.state.form.id; this.update(d => { d.stash = d.stash.filter(s => s.id !== id); }); this.closeSheet(); };
 
-  openWishSheet(w) { this.openSheet('wish', w ? { ...w } : { title: '', craft: 'knitting', yarn: '', link: '' }); }
+  openWishSheet(w) { this.openSheet('wish', w ? { ...w } : { title: '', craft: 'knitting', yarn: '', link: '', shared: false }); }
   saveWish = () => {
     const f = this.state.form;
     if (!f.title.trim()) return this.flash('What do you want to make?');
-    const w = { id: f.id || this.uid(), title: f.title.trim(), craft: f.craft, yarn: f.yarn.trim(), link: f.link.trim() };
+    const w = { id: f.id || this.uid(), title: f.title.trim(), craft: f.craft, yarn: f.yarn.trim(), link: f.link.trim(), shared: !!f.shared };
     this.update(d => { const i = d.wish.findIndex(x => x.id === w.id); if (i >= 0) d.wish[i] = w; else d.wish.push(w); });
     this.closeSheet();
   };
@@ -1132,10 +2205,20 @@ class Component extends DCLogic {
   onPhotoFile = async e => {
     const f = e.target.files[0]; e.target.value = '';
     if (!f) return;
+    if (this.state.photoTarget === 'avatar') {
+      const blob = await this.shrink(f, 400), path = this.state.user.id + '/' + this.uid() + '.jpg';
+      this.flash('Uploading photo…');
+      const { error } = await this.sb.storage.from('avatars').upload(path, blob, { contentType: blob.type || 'image/jpeg', upsert: true });
+      if (error) return this.flash("Couldn't upload that photo.");
+      const url = this.sb.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+      this.setState(st => ({ pf: { ...st.pf, avatarUrl: url } }));
+      return this.flash('Looking good!');
+    }
     const ref = 'idb:' + (await this.storeFile(f));
     if (this.isHeic(f)) this.flash('HEIC saved. Some browsers can\'t preview it.');
     const t = this.state.photoTarget;
     if (t === 'made') this.patchProject(this.state.form.id, { finishPhoto: ref });
+    else if (t === 'update') this.setForm('updRef', ref);
     else this.setForm('photo', ref);
   };
   openPatternFile(f) {
@@ -1149,7 +2232,7 @@ class Component extends DCLogic {
 
   openFinish(p) {
     const used = {}; p.yarns.forEach(u => { used[u.yarnId || u.key] = String(u.grams); });
-    this.openSheet('finish', { photo: null, changes: '', challenges: '', nextTime: '', used, startDate: this.iso(p.startedAt), endDate: this.iso(), ...this.addDefaults() });
+    this.openSheet('finish', { photo: null, changes: '', challenges: '', nextTime: '', postIt: true, used, startDate: this.iso(p.startedAt), endDate: this.iso(), ...this.addDefaults() });
   }
   extraToYarns(extra, stash) {
     const out = [];
@@ -1162,7 +2245,7 @@ class Component extends DCLogic {
     return out;
   }
   addDefaults() { return { extra: [], addMode: 'stash', addYarnId: null, yarnQuery: '', addGrams: '', addName: '', addHex: '#F9B6B8' }; }
-  openNewMake() { this.setState({ openId: null }); this.openSheet('finish', { newMake: true, title: '', craft: 'crochet', category: '', type: '', scrap: false, photo: null, changes: '', challenges: '', nextTime: '', used: {}, startDate: this.iso(), endDate: this.iso(), ...this.addDefaults() }); }
+  openNewMake() { this.setState({ openId: null }); this.openSheet('finish', { newMake: true, postIt: true, title: '', craft: 'crochet', category: '', type: '', scrap: false, photo: null, changes: '', challenges: '', nextTime: '', used: {}, startDate: this.iso(), endDate: this.iso(), ...this.addDefaults() }); }
   addExtraYarn = () => {
     const f = this.state.form, g = this.num(f.addGrams);
     if (!g) return this.flash('How many grams did you use?');
@@ -1187,7 +2270,7 @@ class Component extends DCLogic {
       }
       const p = d.projects.find(x => x.id === id);
       const endTs = this.fromIso(f.endDate);
-      Object.assign(p, { status: 'finished', startedAt: this.fromIso(f.startDate, p.startedAt), finishedAt: endTs, lastWorked: Date.now(), progress: 100, finishPhoto: f.photo || null, reflections: { changes: f.changes, challenges: f.challenges, nextTime: f.nextTime } });
+      Object.assign(p, { shared: !!f.postIt, status: 'finished', startedAt: this.fromIso(f.startDate, p.startedAt), finishedAt: endTs, lastWorked: Date.now(), progress: 100, finishPhoto: f.photo || null, reflections: { changes: f.changes, challenges: f.challenges, nextTime: f.nextTime } });
       p.yarns = p.yarns.map(u => ({ ...u, grams: this.num(f.used[u.yarnId || u.key]) })).filter(u => u.grams > 0);
       (f.extra || []).forEach(x => {
         if (x.source === 'stash') { const u = p.yarns.find(v => v.yarnId === x.yarnId); if (u) u.grams += x.grams; else p.yarns.push({ yarnId: x.yarnId, grams: x.grams }); }
@@ -1197,7 +2280,7 @@ class Component extends DCLogic {
       d.stash = d.stash.filter(y => y.grams > 0);
     });
     this.setState({ tab: 'made', openId: null, sheet: 'made', form: { id } });
-    this.flash(touched ? 'Finished! Your stash is updated.' : 'Finished!');
+    this.flash((touched ? 'Finished! Your stash is updated.' : 'Finished!') + (f.postIt ? ' Shared with your friends.' : ''));
   };
   confirmFrog = () => { const id = this.state.openId; this.update(d => { d.projects = d.projects.filter(p => p.id !== id); }); this.setState({ sheet: null, openId: null }); this.flash('Frogged. The yarn is all yours again.'); };
 
@@ -1211,7 +2294,13 @@ class Component extends DCLogic {
     const s = this.state, d = s.data;
     const noop = () => {};
     const authVals = {
-      authScreen: s.auth !== 'in' || !d, signedIn: s.auth === 'in' && !!d, authLoading: s.auth === 'loading', authForm: s.auth === 'out',
+      authScreen: !(s.auth === 'in' && !!d && s.profile !== undefined), signedIn: s.auth === 'in' && !!d && !!s.profile, setupScreen: s.auth === 'in' && !!d && s.profile === null,
+      authLoading: s.auth === 'loading' || s.auth === 'in', authForm: s.auth === 'out',
+      pfAvatar: this.avatarEl({ id: s.user && s.user.id, avatar_url: (s.pf || {}).avatarUrl, display_name: (s.pf || {}).name || '?' }, 72),
+      pfName: (s.pf || {}).name || '', pfUsername: (s.pf || {}).username || '',
+      onPfName: v => this.setState(st => ({ pf: { ...st.pf, name: v } })), onPfUsername: v => this.setState(st => ({ pf: { ...st.pf, username: String(v).toLowerCase().replace(/[^a-z0-9_]/g, '') } })),
+      pfMsg: s.pfMsg, pfCta: s.pfBusy ? 'Saving…' : (s.profile ? 'Save profile' : "Let's go"), pfPhotoLabel: (s.pf || {}).avatarUrl ? 'Change photo' : 'Add a photo',
+      pickAvatar: () => this.pickPhoto('avatar'), saveProfile: this.saveProfile,
       authTitle: s.authMode === 'up' ? 'Create your account' : 'Sign in', authCta: s.authBusy ? 'One moment…' : s.authMode === 'up' ? 'Create account' : 'Sign in',
       authToggle: s.authMode === 'up' ? 'I already have an account' : 'New here? Create an account', authAutocomplete: s.authMode === 'up' ? 'new-password' : 'current-password',
       authEmail: s.authEmail, authPassword: s.authPassword, authMsg: s.authMsg, authBusy: s.authBusy,
@@ -1267,7 +2356,10 @@ class Component extends DCLogic {
         noYarns: !cp.yarns.length,
         onAddYarn: () => this.openUseYarn(null),
         onFinish: () => this.openFinish(cp),
-        onFrog: () => this.openSheet('frog', {})
+        onFrog: () => this.openSheet('frog', {}),
+        onShareUpdate: () => this.openUpdate(cp),
+        shareColor: cp.shared ? 'blue' : 'outline', shareLabel: cp.shared ? 'Visible to friends' : 'Private',
+        onToggleShare: () => { this.patchProject(cp.id, { shared: !cp.shared }); this.flash(cp.shared ? 'Now private.' : 'Friends can see this now.'); }
       };
     }
 
@@ -1293,7 +2385,7 @@ class Component extends DCLogic {
     const wishes = d.wish.map(w => {
       const words = (w.yarn || '').toLowerCase();
       const hits = d.stash.filter(y => [y.fiber, y.weight, y.colour, y.name].some(t => t && t.length > 2 && words.includes(t.toLowerCase())));
-      return { ...w, match: hits.length ? 'In your stash: ' + hits.slice(0, 3).map(y => this.yarnLabel(y)).join(', ') : '', onStart: () => this.startWish(w), onEdit: () => this.openWishSheet(w) };
+      return { ...w, match: hits.length ? 'In your stash: ' + hits.slice(0, 3).map(y => this.yarnLabel(y)).join(', ') : '', onStart: () => this.startWish(w), onEdit: () => this.openWishSheet(w), shareColor: w.shared ? 'blue' : 'outline', shareLabel: w.shared ? 'Visible to friends' : 'Private', onToggleShare: () => this.update(x => { const it = x.wish.find(v => v.id === w.id); if (it) it.shared = !it.shared; }) };
     });
 
     const made = finished.map((p, i) => { const img = this.src(p.finishPhoto) || this.src(p.photo); return { title: p.title, date: this.date(p.startedAt) + ' – ' + this.date(p.finishedAt), craft: p.craft, category: (this.cats().find(c => c.id === p.category) || {}).label || '', backdrop: backs[i % 3], bg: 'var(--surface-' + backs[i % 3] + ')', image: img || this.illus(p.craft), imageStyle: img ? { width: '100%', height: '100%', objectFit: 'cover', display: 'block' } : { width: '60%', height: '60%', objectFit: 'contain', display: 'block' }, onOpen: () => this.openSheet('made', { id: p.id }) }; });
@@ -1320,6 +2412,9 @@ class Component extends DCLogic {
         onEnd: e => this.patchProject(mp.id, { finishedAt: this.fromIso(e.target.value, mp.finishedAt) }),
         changes: r.changes || '', challenges: r.challenges || '', nextTime: r.nextTime || '',
         onChanges: setR('changes'), onChallenges: setR('challenges'), onNextTime: setR('nextTime'),
+        shareColor: mp.shared ? 'blue' : 'outline', shareLabel: mp.shared ? 'Shared with friends' : 'Private',
+        shareHint: mp.shared ? 'On the feed. Friends see the photo, yarn and dates. Your notes stay private.' : 'Only you can see this. Tap to share it with friends.',
+        onToggleShare: () => this.patchProject(mp.id, { shared: !mp.shared }),
         yarns: mp.yarns.map(u => ({ title: this.yarnLabel(u) || 'Yarn', sub: u.grams + ' g used', swatch: this.swatch(u.cols || u.hex) })), hasYarn: mp.yarns.length > 0,
         patterns: mp.patterns.map(f => ({ name: f.name, sub: this.ext(f) + ' · ' + this.size(f.size), icon: (f.type || '').startsWith('image') ? 'camera' : 'projects', onClick: () => this.openPatternFile(f) })), hasPatterns: mp.patterns.length > 0
       };
@@ -1355,16 +2450,160 @@ class Component extends DCLogic {
         onRemove: () => this.setState(st => ({ form: { ...st.form, extra: st.form.extra.filter(e => e.key !== x.key) } })) };
     }) : [];
 
-    const tabDefs = [['projects', 'Projects', 'projects'], ['stash', 'Stash', 'home'], ['wish', 'Wishlist', 'heart'], ['made', 'Made', 'sparkle']];
-    const tabs = tabDefs.map(([id, label, icon]) => ({ label, icon, color: s.tab === id ? 'var(--nn-cosmic-latte)' : 'var(--nn-dusty-rose)', onClick: () => this.goTab(id) }));
-    const titles = { project: f.id ? 'Edit project' : 'New project', yarn: f.id ? 'Edit yarn' : 'Add yarn', wish: f.id ? 'Edit wish' : 'Add to wishlist', useYarn: f.editing ? 'Yarn for this project' : 'Add yarn', pattern: 'Pattern', finish: f.newMake ? 'Log a make' : 'All done!', made: mp ? mp.title : '', frog: 'Frog this project?', cats: 'Categories', delCat: 'Delete category?' };
-    const plus = { projects: ['New project', () => this.openProjectSheet(null)], made: ['Log a make', () => this.openNewMake()], stash: ['Add yarn', () => this.openYarnSheet(null)], wish: ['Add to wishlist', () => this.openWishSheet(null)] }[s.tab];
+    const me = s.user ? s.user.id : null, soc = s.social, myProf = s.profile || {}, sf = s.form || {};
+    const coverSt = { width: '100%', height: '100%', objectFit: 'cover', display: 'block' }, containSt = { width: '60%', height: '60%', objectFit: 'contain', display: 'block' };
+    const pname = id => id === me ? 'You' : ((soc.profiles[id] || {}).display_name || 'A friend');
+    const mentionParts = body => {
+      const out = [], re = /@[a-z0-9_]+/gi; let last = 0, m;
+      body = String(body || '');
+      while ((m = re.exec(body))) {
+        if (m.index > last) out.push({ text: body.slice(last, m.index), plain: true });
+        const u = m[0].slice(1).toLowerCase(), who = Object.values(soc.profiles).find(x => x.username === u);
+        out.push(who ? { text: m[0], mention: true, onClick: () => this.openFriend(who.id) } : { text: m[0], plain: true });
+        last = m.index + m[0].length;
+      }
+      if (last < body.length) out.push({ text: body.slice(last), plain: true });
+      return out;
+    };
+    const postCard = (p, i) => {
+      const au = soc.profiles[p.user_id] || { id: p.user_id, display_name: 'A friend' };
+      const pl = soc.likes.filter(l => l.post_id === p.id), liked = pl.some(l => l.user_id === me);
+      const pc = soc.comments.filter(c => c.post_id === p.id), img = this.sharedSrc(p.photo), ys = p.yarns || [];
+      return {
+        author: au.id === me ? 'You' : au.display_name, avatar: this.avatarEl(au, 40), when: 'Finished · ' + this.relShort(p.posted_at), onAuthor: () => this.openFriend(au.id),
+        handle: au.username ? '@' + au.username : '', ago: this.relShort(p.posted_at), action: p.kind === 'update' ? 'shared a progress update' : 'finished a ' + (p.craft === 'knitting' ? 'knitting' : 'crochet') + ' project',
+        isUpdate: p.kind === 'update', caption: p.caption || '', progress: p.progress || 0, barColor: backs[i % 3],
+        canDeleteUpdate: p.kind === 'update' && p.user_id === me, onDeleteUpdate: () => this.deleteUpdate(p),
+        hasLastComment: !s.openComments[p.id] && pc.length > 0, lastComment: pc.length ? { name: pname(pc[pc.length - 1].user_id), body: pc[pc.length - 1].body } : {},
+        collapsed: !s.openComments[p.id], viewLabel: pc.length > 1 ? 'View all ' + pc.length + ' comments' : (pc.length ? 'Reply' : 'Add a comment'),
+        title: p.title, craft: p.craft, category: p.category || '', bg: 'var(--surface-' + backs[i % 3] + ')',
+        image: img || this.illus(p.craft), imageStyle: img ? coverSt : containSt,
+        yarnText: ys.map(y => y.name + (y.grams ? ' (' + y.grams + ' g)' : '')).join(', '),
+        daysText: p.kind !== 'update' && p.started_at && p.finished_at ? Math.max(1, Math.round((Date.parse(p.finished_at) - Date.parse(p.started_at)) / DAY)) + ' days from start to finish' : '',
+        likeCount: String(pl.length), likeBg: liked ? 'var(--nn-dusty-rose)' : 'transparent', likeLabel: liked ? 'Remove heart' : 'Heart this', onLike: () => this.toggleLike(p),
+        likedBy: pl.map(l => l.user_id === me ? 'you' : pname(l.user_id)).join(', '),
+        commentCount: String(pc.length), showComments: !!s.openComments[p.id],
+        onToggleComments: () => this.setState(st => ({ openComments: { ...st.openComments, [p.id]: !st.openComments[p.id] } })),
+        comments: (() => {
+          const tops = pc.filter(c => !c.parent_id || !pc.some(x => x.id === c.parent_id)), flat = [];
+          tops.forEach(t => { flat.push(t); pc.filter(r => r.parent_id === t.id).forEach(r => flat.push(r)); });
+          return flat.map(c => ({ avatar: this.avatarEl(soc.profiles[c.user_id] || { id: c.user_id }, c.parent_id ? 24 : 28), name: pname(c.user_id), parts: mentionParts(c.body), when: this.relShort(c.created_at), indent: c.parent_id && pc.some(x => x.id === c.parent_id) ? '36px' : '0px', canDelete: c.user_id === me || p.user_id === me, onDelete: () => this.deleteComment(c),
+            onReply: () => { const root = c.parent_id && pc.some(x => x.id === c.parent_id) ? c.parent_id : c.id, u = (soc.profiles[c.user_id] || {}).username; this.setState(st => ({ replyTo: { ...st.replyTo, [p.id]: { id: root, name: pname(c.user_id) } }, drafts: { ...st.drafts, [p.id]: u && c.user_id !== me ? '@' + u + ' ' : (st.drafts[p.id] || '') }, openComments: { ...st.openComments, [p.id]: true } })); } }));
+        })(),
+        replying: (s.replyTo[p.id] || {}).name || '', onCancelReply: () => this.setState(st => ({ replyTo: { ...st.replyTo, [p.id]: null } })),
+        inputPh: (s.replyTo[p.id] || {}).name ? 'Write a reply…' : 'Add a comment… type @ to mention',
+        ...(() => {
+          const dr = s.drafts[p.id] || '', m = dr.match(/@([a-z0-9_]*)$/i);
+          if (!m) return { hasSuggest: false, suggest: [] };
+          const q = m[1].toLowerCase(), pool = [...new Set([...soc.friendIds, p.user_id, ...pc.map(c => c.user_id)])].filter(id => id !== me).map(id => soc.profiles[id]).filter(x => x && x.username && x.username.startsWith(q)).slice(0, 5);
+          return { hasSuggest: pool.length > 0, suggest: pool.map(x => ({ label: '@' + x.username + ' · ' + x.display_name, onClick: () => this.setState(st => ({ drafts: { ...st.drafts, [p.id]: (st.drafts[p.id] || '').replace(/@([a-z0-9_]*)$/i, '@' + x.username + ' ') } })) })) };
+        })(),
+        draft: s.drafts[p.id] || '', onDraft: v => this.setState(st => ({ drafts: { ...st.drafts, [p.id]: v } })), onSend: () => this.sendComment(p)
+      };
+    };
+    const feedPosts = soc.posts.filter(p => p.user_id === me || soc.friendIds.includes(p.user_id));
+    const feed = feedPosts.slice(0, s.feedShow).map(postCard);
+    const hasMoreFeed = feedPosts.length > s.feedShow || soc.posts.length >= (s.fetchLimit || 60);
+    const friends = soc.friendIds.map(id => soc.profiles[id] || { id, display_name: 'Friend', username: '' });
+    const myPostIds = new Set(soc.posts.filter(p => p.user_id === me).map(p => p.id));
+    const pq = String(s.peopleQ || '').trim().toLowerCase().replace(/^@/, '');
+    const relOf = id => soc.friendIds.includes(id) ? 'friend' : soc.outgoing.some(x => x.addressee === id) ? 'requested' : soc.incoming.some(x => x.requester === id) ? 'incoming' : 'none';
+    const relBtn = id => { const r = relOf(id), inc = soc.incoming.find(x => x.requester === id); return { label: r === 'friend' ? 'Friends' : r === 'requested' ? 'Requested' : r === 'incoming' ? 'Accept' : 'Add friend', variant: r === 'friend' || r === 'requested' ? 'outline' : undefined, disabled: r === 'friend' || r === 'requested', onClick: () => { if (r === 'incoming') this.acceptRequest(inc); else if (r === 'none') this.sendRequest(id); } }; };
+    const postTitle = id => (soc.posts.find(p => p.id === id) || {}).title || 'make';
+    const seenAt = d.seenAt || 0, seenBefore = s.sheet === 'activity' ? (sf.seenBefore || 0) : seenAt;
+    const acts = [
+      ...soc.likes.filter(l => myPostIds.has(l.post_id) && l.user_id !== me).map(l => ({ at: l.created_at, user: l.user_id, post: l.post_id, text: pname(l.user_id) + ' hearted your ' + postTitle(l.post_id) })),
+      ...(() => {
+        const myCids = new Set(soc.comments.filter(c => c.user_id === me).map(c => c.id)), handle = myProf.username ? '@' + myProf.username.toLowerCase() : null;
+        const mentions = c => !!handle && (String(c.body).toLowerCase().match(/@[a-z0-9_]+/g) || []).includes(handle);
+        const q = t => ': \u201c' + t + '\u201d';
+        return soc.comments.filter(c => c.user_id !== me && (myPostIds.has(c.post_id) || myCids.has(c.parent_id) || mentions(c))).map(c => ({ at: c.created_at, user: c.user_id, post: c.post_id,
+          text: mentions(c) ? pname(c.user_id) + ' mentioned you' + q(c.body) : myCids.has(c.parent_id) ? pname(c.user_id) + ' replied to your comment' + q(c.body) : pname(c.user_id) + ' commented on your ' + postTitle(c.post_id) + q(c.body) }));
+      })()
+    ].sort((a, b) => String(b.at).localeCompare(String(a.at))).slice(0, 40);
+    const actCount = acts.filter(a => Date.parse(a.at) > seenAt).length + soc.incoming.length;
+    const activityItems = acts.map(a => ({ avatar: this.avatarEl(soc.profiles[a.user] || { id: a.user }, 36), text: a.text, when: this.relShort(a.at), bg: Date.parse(a.at) > seenBefore ? 'var(--nn-dusty-rose)' : 'var(--nn-card)', onClick: () => this.setState(st => ({ sheet: null, tab: 'home', friendView: null, openComments: { ...st.openComments, [a.post]: true } })) }));
+    const requestRows = soc.incoming.map(r => { const pr = soc.profiles[r.requester] || { id: r.requester, display_name: 'Someone' }; return { avatar: this.avatarEl(pr, 40), name: pr.display_name, username: pr.username ? '@' + pr.username : '', onAccept: () => this.acceptRequest(r), onDecline: () => this.removeFriendship(r, 'Request declined.') }; });
+    const outgoingRows = soc.outgoing.map(r => { const pr = soc.profiles[r.addressee] || { id: r.addressee, display_name: 'Someone' }; return { name: pr.display_name, username: pr.username ? '@' + pr.username : '', onCancel: () => this.removeFriendship(r, 'Request cancelled.') }; });
+    const friendRows = friends.filter(pr => !pq || (pr.display_name || '').toLowerCase().includes(pq) || (pr.username || '').includes(pq)).map(pr => ({ title: pr.display_name, sub: pr.username ? '@' + pr.username : '', avatar: this.avatarEl(pr, 36), onClick: () => this.openFriend(pr.id) }));
+    const searchResults = (sf.results || []).map(r => {
+      const isF = soc.friendIds.includes(r.id), out = soc.outgoing.find(x => x.addressee === r.id), inc = soc.incoming.find(x => x.requester === r.id);
+      return { avatar: this.avatarEl(r, 40), name: r.display_name, username: '@' + r.username, actionLabel: isF ? 'Friends' : out ? 'Requested' : inc ? 'Accept' : 'Add', disabled: isF || !!out, variant: isF || out ? 'outline' : undefined, onAction: () => { if (inc) this.acceptRequest(inc); else if (!isF && !out) this.sendRequest(r.id); } };
+    });
+    const fvId = s.tab === 'friend' ? s.friendView : null, fvProf = fvId ? (soc.profiles[fvId] || { id: fvId, display_name: 'Friend' }) : null, fv = s.fv;
+    const fvProjects = fv ? (fv.projects || []).map((p, i) => { const img = this.sharedSrc(p.photo); return { title: p.title, craft: p.craft, category: p.category || '', status: p.status || 'in-progress', progress: p.progress || 0, backdrop: backs[i % 3], bg: 'var(--surface-' + backs[i % 3] + ')', image: img || this.illus(p.craft), imageStyle: img ? coverSt : containSt, yarnText: (p.yarns || []).map(y => y.name).join(', '), started: p.startedAt ? 'Started ' + this.date(p.startedAt) : '' }; }) : [];
+    const fvPosts = fvId ? soc.posts.filter(p => p.user_id === fvId).map(postCard) : [];
+    const fvWish = fv ? (fv.wish || []) : [];
+    const gridItem = (p, i) => { const img = this.sharedSrc(p.photo); return { title: p.title, bg: 'var(--surface-' + backs[i % 3] + ')', image: img || this.illus(p.craft), imageStyle: img ? coverSt : { width: '55%', height: '55%', objectFit: 'contain', display: 'block' }, onClick: () => this.openPost(p.id) }; };
+    const myGridAll = soc.posts.filter(p => p.user_id === me && p.kind !== 'update'), myGrid = myGridAll.slice(0, s.gridShow).map(gridItem);
+    const fvGridAll = fvId ? soc.posts.filter(p => p.user_id === fvId && p.kind !== 'update') : [], fvGrid = fvGridAll.slice(0, s.gridShow).map(gridItem);
+    const postObj = s.tab === 'post' ? soc.posts.find(p => p.id === s.postId) : null;
+    const unfriendP = s.sheet === 'unfriend' ? (soc.profiles[sf.pid] || {}) : {};
+    const shareKey = s.sheet === 'finish' ? 'postIt' : 'shared', fsOn = !!sf[shareKey];
+    const socialVals = {
+      showHome: s.tab === 'home', showMyProfile: s.tab === 'profile', showFriend: !!fvId, showFriends: s.tab === 'friends', showPost: s.tab === 'post',
+      goFriends: () => this.goTab('friends'), goWish: () => this.goTab('wish'), goProfile: () => this.goTab('profile'),
+      myGrid, noMyPosts: s.feedLoaded && !myGrid.length, myMakeCount: String(myGridAll.length), myGridMore: myGridAll.length > s.gridShow, fvGridMore: fvGridAll.length > s.gridShow, moreGrid: () => this.setState(st => ({ gridShow: st.gridShow + 9 })), friendsNum: String(friends.length), wishCount: String(d.wish.length),
+      fvShowWorking: s.fvSection === 'working', fvShowMade: s.fvSection === 'made', fvShowWish: s.fvSection === 'wish',
+      fvBtn: { working: s.fvSection === 'working' ? undefined : 'outline', made: s.fvSection === 'made' ? undefined : 'outline', wish: s.fvSection === 'wish' ? undefined : 'outline' },
+      fvGoWorking: () => this.setState({ fvSection: 'working' }), fvGoMade: () => this.setState({ fvSection: 'made' }), fvGoWish: () => this.setState({ fvSection: 'wish' }),
+      openFvFriends: this.openFvFriends,
+      fvfLoading: s.sheet === 'fvFriends' && !s.fvfList, fvfEmpty: s.sheet === 'fvFriends' && !!s.fvfList && !s.fvfList.length,
+      fvfEmptyText: s.fvfError ? "You can't see their friends list." : 'No friends to show yet.',
+      fvfRows: (s.fvfList || []).map(p => ({ avatar: this.avatarEl(p, 40), name: p.id === me ? 'You' : p.display_name, username: '@' + p.username, onOpen: () => { this.closeSheet(); this.openFriend(p.id); } })),
+      updIntro: (() => { const p = s.sheet === 'update' && d.projects.find(x => x.id === sf.pid); return p ? 'Show your friends how ' + p.title + ' is going.' : ''; })(),
+      updProgress: sf.progress || 0, updProgressText: (sf.progress || 0) + '%',
+      updLess: () => this.setForm('progress', Math.max(0, (sf.progress || 0) - 5)), updMore: () => this.setForm('progress', Math.min(100, (sf.progress || 0) + 5)),
+      updPhoto: s.sheet === 'update' ? (this.src(sf.updRef) || this.src((d.projects.find(x => x.id === sf.pid) || {}).photo) || null) : null,
+      updPhotoLabel: sf.updRef ? 'Change photo' : 'Add a new photo', pickUpdatePhoto: () => this.pickPhoto('update'),
+      updCaption: sf.caption || '', onUpdCaption: v => this.setForm('caption', v), postUpdate: this.postUpdate, updCta: sf.posting ? 'Posting…' : 'Post update',
+      fvGrid, fvMakeCount: String(fvGridAll.length), fvWorkingCount: String(fvProjects.length), fvWishCount: String(fvWish.length), fvFriendCount: s.fvFriends == null ? '–' : String(s.fvFriends),
+      postDetail: postObj ? [postCard(postObj, Math.max(0, soc.posts.indexOf(postObj)))] : [], postMissing: s.tab === 'post' && !postObj,
+      postHeading: postObj ? (postObj.user_id === me ? 'Your make' : pname(postObj.user_id) + "'s make") : 'Make', closePost: this.closePost,
+      me: { firstName: (myProf.display_name || '').split(' ')[0], name: myProf.display_name || '', username: myProf.username ? '@' + myProf.username : '', avatar: this.avatarEl(myProf, 72), avatarLg: this.avatarEl(myProf, 88), visibility: myProf.is_public ? 'Public profile' : 'Friends only' },
+      hasMoreFeed, loadMoreFeed: () => {
+        const next = s.feedShow + 4;
+        if (next >= soc.posts.length && soc.posts.length >= (s.fetchLimit || 60)) this.setState({ feedShow: next, fetchLimit: (s.fetchLimit || 60) + 60 }, () => this.loadSocial());
+        else this.setState({ feedShow: next });
+      },
+      feed, feedLoading: !s.feedLoaded, feedEmpty: s.feedLoaded && !feed.length, noFriends: s.feedLoaded && !friends.length,
+      feedEmptyText: finished.length ? 'Nothing posted yet. Your makes stay private until you share them from the Made tab.' : 'Nothing posted yet. When you or a friend finishes something, it shows up here.',
+      hasActivity: actCount > 0, activityCount: actCount > 9 ? '9+' : String(actCount), openActivity: this.openActivity,
+      activityItems, noActivity: !acts.length && !requestRows.length,
+      requestRows, hasRequests: requestRows.length > 0, outgoingRows, hasOutgoing: outgoingRows.length > 0,
+      friendRows, hasFriendRows: friendRows.length > 0, noFriendRows: !friends.length, friendCount: friends.length === 1 ? '1 friend' : friends.length + ' friends',
+      openAddFriend: this.openAddFriend, openProfileEdit: this.openProfileEdit,
+      searchQ: sf.q || '', onSearchQ: v => this.setForm('q', v), doSearch: this.searchFriend, searchResults, searchMsg: sf.searchMsg || '', searchCta: sf.searching ? 'Searching…' : 'Search',
+      fvAvatar: fvProf ? this.avatarEl(fvProf, 88) : null, fvName: fvProf ? fvProf.display_name : '', fvUsername: fvProf && fvProf.username ? '@' + fvProf.username : '',
+      fvLoading: !!fvId && !fv, fvProjects, fvNoProjects: !!fv && !fvProjects.length, fvPosts, fvNoPosts: !!fvId && !fvPosts.length, fvWish, fvNoWish: !!fv && !fvWish.length,
+      fvIsFriend: !!fvId && soc.friendIds.includes(fvId),
+      fvCanSee: !!fvId && (soc.friendIds.includes(fvId) || !!(fvProf && fvProf.is_public)), fvLocked: !!fvId && !soc.friendIds.includes(fvId) && !(fvProf && fvProf.is_public),
+      fvShowRel: !!fvId && !soc.friendIds.includes(fvId), fvRel: fvId ? relBtn(fvId) : {},
+      peopleQ: s.peopleQ, onPeopleQ: this.onPeopleQ, showPeopleResults: pq.length >= 2,
+      peopleMsg: s.peopleMsg,
+      peopleResults: s.peopleResults.filter(r => !soc.friendIds.includes(r.id)).map(r => { const b = relBtn(r.id); return { avatar: this.avatarEl(r, 40), name: r.display_name, username: '@' + r.username, vis: r.is_public ? 'Public' : 'Friends only', actionLabel: b.label, variant: b.variant, disabled: b.disabled, onAction: b.onClick, onOpen: () => this.openFriend(r.id) }; }),
+      noFriendMatch: friends.length > 0 && !friendRows.length,
+      pfVisChips: [[false, 'Friends only'], [true, 'Public']].map(([v, l]) => ({ label: l, selected: !!(s.pf || {}).isPublic === v, onClick: () => this.setState(st => ({ pf: { ...st.pf, isPublic: v } })) })),
+      pfVisHint: (s.pf || {}).isPublic ? 'Anyone on NitNac can find you and see what you share. Private projects stay private.' : 'Only friends see what you share. People can still find you by your exact username or email.', closeFriend: this.closeFriend, openUnfriend: () => this.openSheet('unfriend', { pid: fvId }),
+      unfriendText: (unfriendP.display_name || 'They') + " won't see your shared projects anymore, and you won't see theirs.", confirmUnfriend: this.confirmUnfriend,
+      formShareColor: fsOn ? 'blue' : 'outline',
+      formShareLabel: s.sheet === 'finish' ? (fsOn ? 'Share with friends' : 'Keep private') : (fsOn ? 'Visible to friends' : 'Private'),
+      formShareHint: ({ project: fsOn ? 'Friends see the photo, yarn and progress. Patterns and notes stay private.' : 'Only you can see this. Tap to share with friends.', wish: fsOn ? 'Shows on your profile.' : 'Only you can see this. Tap to show it on your profile.', finish: fsOn ? 'Goes on the feed. Friends see the photo, yarn used and dates. Your notes stay private.' : 'Only you will see this make. Tap to share it.' })[s.sheet] || '',
+      toggleFormShare: () => this.setForm(shareKey, !fsOn)
+    };
+    const dots = { home: actCount > 0, profile: soc.incoming.length > 0 };
+    const activeTab = ['wish', 'friends'].includes(s.tab) ? 'profile' : s.tab === 'post' ? s.postFrom : s.tab;
+    const tabDefs = [['home', 'Home', 'home'], ['projects', 'Projects', 'projects'], ['stash', 'Stash', 'heart'], ['made', 'Made', 'sparkle'], ['profile', 'Profile', 'profile']];
+    const tabs = tabDefs.map(([id, label, icon]) => ({ label, icon, dot: !!dots[id], color: activeTab === id ? 'var(--nn-cosmic-latte)' : 'var(--nn-dusty-rose)', onClick: () => this.goTab(id) }));
+    const titles = { project: f.id ? 'Edit project' : 'New project', yarn: f.id ? 'Edit yarn' : 'Add yarn', wish: f.id ? 'Edit wish' : 'Add to wishlist', useYarn: f.editing ? 'Yarn for this project' : 'Add yarn', pattern: 'Pattern', finish: f.newMake ? 'Log a make' : 'All done!', made: mp ? mp.title : '', frog: 'Frog this project?', cats: 'Categories', delCat: 'Delete category?', activity: 'Activity', update: 'Share an update', fvFriends: (s.tab === 'friend' && s.friendView ? (((s.social.profiles[s.friendView] || {}).display_name || 'Their') + "'s friends") : 'Friends'), addFriend: 'Add a friend', profileEdit: 'Edit profile', unfriend: 'Remove friend?' };
+    const plus = { projects: ['New project', () => this.openProjectSheet(null)], made: ['Log a make', () => this.openNewMake()], stash: ['Add yarn', () => this.openYarnSheet(null)], wish: ['Add to wishlist', () => this.openWishSheet(null)], friends: ['Add friend', () => this.openAddFriend()] }[s.tab] || null;
 
     const wide = !!s.wide;
     return {
       ...authVals,
+      ...socialVals, tabsMobile: tabs,
       wide, narrow: !wide, mainPad: wide ? '24px clamp(16px,4vw,48px) 64px' : '24px 16px 150px',
-      tabsAll: tabDefs.map(([id, label, icon]) => ({ label, icon, onClick: () => this.goTab(id), pillBg: s.tab === id ? 'var(--nn-cosmic-latte)' : 'transparent', pillColor: s.tab === id ? 'var(--nn-crimson-deep)' : 'var(--nn-dusty-rose)' })),
+      tabsAll: tabDefs.map(([id, label, icon]) => ({ label, icon, dot: !!dots[id], onClick: () => this.goTab(id), pillBg: activeTab === id ? 'var(--nn-cosmic-latte)' : 'transparent', pillColor: activeTab === id ? 'var(--nn-crimson-deep)' : 'var(--nn-dusty-rose)' })),
       toastBottom: wide ? '32px' : '104px', sheetAlign: wide ? 'center' : 'flex-end', sheetOuterPad: wide ? '24px' : '0', sheetMax: wide ? '560px' : '480px', sheetRadius: wide ? '28px' : '28px 28px 0 0',
       todayText: new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long' }),
       showProjects: s.tab === 'projects' && !cp, showDetail: s.tab === 'projects' && !!cp, showStash: s.tab === 'stash', showWish: s.tab === 'wish', showMade: s.tab === 'made',
@@ -1376,10 +2615,10 @@ class Component extends DCLogic {
       wishes, noWish: !wishes.length,
       made, madeGroups, noMade: !made.length, noMadeMatch: made.length > 0 && !madeGroups.length,
       madeCatFilters, madeSearch: s.madeSearch, onMadeSearch: v => this.setState({ madeSearch: v }), madeCount: String(finished.length), madeGrams: madeGrams + ' g', madeScrap: String(finished.filter(p => p.scrap).length),
-      tabsLeft: tabs.slice(0, 2), tabsRight: tabs.slice(2), plusLabel: plus[0], onPlus: plus[1],
+      tabsLeft: tabs.slice(0, 2), tabsRight: tabs.slice(2), plusLabel: plus ? plus[0] : '', onPlus: plus ? plus[1] : noop, hasPlus: !!plus,
       toast: s.toast,
       sheetOpen: !!s.sheet, sheetTitle: titles[s.sheet] || '', closeSheet: this.closeSheet,
-      sh: { project: s.sheet === 'project', yarn: s.sheet === 'yarn', wish: s.sheet === 'wish', useYarn: s.sheet === 'useYarn', pattern: s.sheet === 'pattern', finish: s.sheet === 'finish', made: s.sheet === 'made' && !!mp, frog: s.sheet === 'frog', cats: s.sheet === 'cats', delCat: s.sheet === 'delCat' },
+      sh: { project: s.sheet === 'project', yarn: s.sheet === 'yarn', wish: s.sheet === 'wish', useYarn: s.sheet === 'useYarn', pattern: s.sheet === 'pattern', finish: s.sheet === 'finish', made: s.sheet === 'made' && !!mp, frog: s.sheet === 'frog', cats: s.sheet === 'cats', delCat: s.sheet === 'delCat', activity: s.sheet === 'activity', update: s.sheet === 'update', fvFriends: s.sheet === 'fvFriends', addFriend: s.sheet === 'addFriend', profileEdit: s.sheet === 'profileEdit', unfriend: s.sheet === 'unfriend' },
       form: { title: f.title || '', tools: f.tools || '', name: f.name || '', brand: f.brand || '', fiber: f.fiber || '', colour: f.colour || '', hex: f.hex || '#F9B6B8', source: f.source || '', grams: f.grams || '', yarn: f.yarn || '', link: f.link || '', notes: f.notes || '', changes: f.changes || '', challenges: f.challenges || '', nextTime: f.nextTime || '', scrap: !!f.scrap, id: f.id || null, editing: !!f.editing },
       on, onHex: e => this.setForm('hex', e.target.value),
       formStart: f.startDate || '', formEnd: f.endDate || '', onStartDate: e => this.setForm('startDate', e.target.value), onEndDate: e => this.setForm('endDate', e.target.value),
@@ -1390,15 +2629,13 @@ class Component extends DCLogic {
       formPhoto: this.src(f.photo) || null,
       craftChips: [['crochet', 'Crochet'], ['knitting', 'Knitting']].map(([v, l]) => ({ label: l, selected: f.craft === v, onClick: () => this.setForm('craft', v) })),
       toggleScrap: () => this.setForm('scrap', !f.scrap),
-      catRows: this.cats().map(c => ({ label: c.label, sub: c.types.length ? c.types.join(', ') : 'No item types', onDelete: () => this.openSheet('delCat', { catId: c.id }) })),
+      catRows: this.cats().map(c => ({ label: c.label, onDelete: () => this.openSheet('delCat', { catId: c.id }) })),
       noCats: !this.cats().length,
       newCat: f.newCat || '', onNewCat: v => this.setForm('newCat', v), addCategory: this.addCategory,
       openCats: () => this.openSheet('cats', { newCat: '' }),
       delCatText: (() => { const c = this.cats().find(x => x.id === f.catId); if (!c) return ''; const n = d.projects.filter(p => p.category === c.id).length; return 'Delete ' + c.label + '? ' + (n ? (n === 1 ? '1 project uses it. It stays, just without a category.' : n + ' projects use it. They stay, just without a category.') : 'No projects use it.'); })(),
       confirmDeleteCat: this.confirmDeleteCat, backToCats: () => this.openSheet('cats', { newCat: '' }),
       catChips: this.cats().map(c => ({ label: c.label, selected: f.category === c.id, onClick: () => this.setState(st => ({ form: { ...st.form, category: st.form.category === c.id ? '' : c.id, type: '' } })) })),
-      typeChips: ((this.cats().find(c => c.id === f.category) || {}).types || []).map(t => ({ label: t, selected: f.type === t, onClick: () => this.setForm('type', f.type === t ? '' : t) })),
-      hasTypes: ((this.cats().find(c => c.id === f.category) || {}).types || []).length > 0,
       weightChips: ['Lace', 'Fingering', 'Sport', 'DK', 'Worsted', 'Aran', 'Bulky'].map(w => ({ label: w, selected: f.weight === w, onClick: () => this.setForm('weight', w) })),
       projectSaveLabel: f.id ? 'Save changes' : 'Cast on',
       pickCover: () => this.pickPhoto('cover'), pickFinish: () => this.pickPhoto('finish'), pickMadePhoto: () => this.pickPhoto('made'),
